@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1764pt" height="648pt" viewBox="0 0 1764 648" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-19T12:02:50.344665</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.6.3, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 648 
+L 1764 648 
+L 1764 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 658.8 129.6 
+L 1105.2 129.6 
+L 1105.2 64.8 
+L 658.8 64.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #d9e4f2; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_1">
+    <path d="M 882 129.6 
+L 882 162 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.4; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 154.8 162 
+L 1609.2 162 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.4; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 154.8 162 
+L 154.8 190.8 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.4; stroke-linecap: square"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 25.2 262.8 
+L 284.4 262.8 
+L 284.4 190.8 
+L 25.2 190.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #fdf3e1; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_4">
+    <path d="M 43.2 262.8 
+L 43.2 482.4 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_5">
+    <path d="M 43.2 316.8 
+L 64.8 316.8 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 64.8 347.4 
+L 284.4 347.4 
+L 284.4 286.2 
+L 64.8 286.2 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_6">
+    <path d="M 43.2 399.6 
+L 64.8 399.6 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 64.8 430.2 
+L 284.4 430.2 
+L 284.4 369 
+L 64.8 369 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_7">
+    <path d="M 43.2 482.4 
+L 64.8 482.4 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 64.8 513 
+L 284.4 513 
+L 284.4 451.8 
+L 64.8 451.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_8">
+    <path d="M 445.68 162 
+L 445.68 190.8 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.4; stroke-linecap: square"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 316.08 262.8 
+L 575.28 262.8 
+L 575.28 190.8 
+L 316.08 190.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #fdf3e1; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_9">
+    <path d="M 334.08 262.8 
+L 334.08 565.2 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_10">
+    <path d="M 334.08 316.8 
+L 355.68 316.8 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 355.68 347.4 
+L 575.28 347.4 
+L 575.28 286.2 
+L 355.68 286.2 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_11">
+    <path d="M 334.08 399.6 
+L 355.68 399.6 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 355.68 430.2 
+L 575.28 430.2 
+L 575.28 369 
+L 355.68 369 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_12">
+    <path d="M 334.08 482.4 
+L 355.68 482.4 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 355.68 513 
+L 575.28 513 
+L 575.28 451.8 
+L 355.68 451.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_13">
+    <path d="M 334.08 565.2 
+L 355.68 565.2 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 355.68 595.8 
+L 575.28 595.8 
+L 575.28 534.6 
+L 355.68 534.6 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_14">
+    <path d="M 736.56 162 
+L 736.56 190.8 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.4; stroke-linecap: square"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 606.96 262.8 
+L 866.16 262.8 
+L 866.16 190.8 
+L 606.96 190.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #fdf3e1; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_15">
+    <path d="M 624.96 262.8 
+L 624.96 482.4 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_16">
+    <path d="M 624.96 316.8 
+L 646.56 316.8 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 646.56 347.4 
+L 866.16 347.4 
+L 866.16 286.2 
+L 646.56 286.2 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_17">
+    <path d="M 624.96 399.6 
+L 646.56 399.6 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 646.56 430.2 
+L 866.16 430.2 
+L 866.16 369 
+L 646.56 369 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_18">
+    <path d="M 624.96 482.4 
+L 646.56 482.4 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 646.56 513 
+L 866.16 513 
+L 866.16 451.8 
+L 646.56 451.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_19">
+    <path d="M 1027.44 162 
+L 1027.44 190.8 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.4; stroke-linecap: square"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 897.84 262.8 
+L 1157.04 262.8 
+L 1157.04 190.8 
+L 897.84 190.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #fdf3e1; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_20">
+    <path d="M 915.84 262.8 
+L 915.84 565.2 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_21">
+    <path d="M 915.84 316.8 
+L 937.44 316.8 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 937.44 347.4 
+L 1157.04 347.4 
+L 1157.04 286.2 
+L 937.44 286.2 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_22">
+    <path d="M 915.84 399.6 
+L 937.44 399.6 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 937.44 430.2 
+L 1157.04 430.2 
+L 1157.04 369 
+L 937.44 369 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_23">
+    <path d="M 915.84 482.4 
+L 937.44 482.4 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 937.44 513 
+L 1157.04 513 
+L 1157.04 451.8 
+L 937.44 451.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_24">
+    <path d="M 915.84 565.2 
+L 937.44 565.2 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_20">
+    <path d="M 937.44 595.8 
+L 1157.04 595.8 
+L 1157.04 534.6 
+L 937.44 534.6 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_25">
+    <path d="M 1318.32 162 
+L 1318.32 190.8 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.4; stroke-linecap: square"/>
+   </g>
+   <g id="patch_21">
+    <path d="M 1188.72 262.8 
+L 1447.92 262.8 
+L 1447.92 190.8 
+L 1188.72 190.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #fdf3e1; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_26">
+    <path d="M 1206.72 262.8 
+L 1206.72 482.4 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_27">
+    <path d="M 1206.72 316.8 
+L 1228.32 316.8 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_22">
+    <path d="M 1228.32 347.4 
+L 1447.92 347.4 
+L 1447.92 286.2 
+L 1228.32 286.2 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_28">
+    <path d="M 1206.72 399.6 
+L 1228.32 399.6 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_23">
+    <path d="M 1228.32 430.2 
+L 1447.92 430.2 
+L 1447.92 369 
+L 1228.32 369 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_29">
+    <path d="M 1206.72 482.4 
+L 1228.32 482.4 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_24">
+    <path d="M 1228.32 513 
+L 1447.92 513 
+L 1447.92 451.8 
+L 1228.32 451.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_30">
+    <path d="M 1609.2 162 
+L 1609.2 190.8 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.4; stroke-linecap: square"/>
+   </g>
+   <g id="patch_25">
+    <path d="M 1479.6 262.8 
+L 1738.8 262.8 
+L 1738.8 190.8 
+L 1479.6 190.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #fdf3e1; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_31">
+    <path d="M 1497.6 262.8 
+L 1497.6 482.4 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_32">
+    <path d="M 1497.6 316.8 
+L 1519.2 316.8 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_26">
+    <path d="M 1519.2 347.4 
+L 1738.8 347.4 
+L 1738.8 286.2 
+L 1519.2 286.2 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_33">
+    <path d="M 1497.6 399.6 
+L 1519.2 399.6 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_27">
+    <path d="M 1519.2 430.2 
+L 1738.8 430.2 
+L 1738.8 369 
+L 1519.2 369 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_34">
+    <path d="M 1497.6 482.4 
+L 1519.2 482.4 
+" clip-path="url(#pcfeadc55ce)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_28">
+    <path d="M 1519.2 513 
+L 1738.8 513 
+L 1738.8 451.8 
+L 1519.2 451.8 
+z
+" clip-path="url(#pcfeadc55ce)" style="fill: #ffffff; stroke: #222222; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font: 700 17px 'DejaVu Sans'; text-anchor: middle" x="882" y="29.865703" transform="rotate(-0 882 29.865703)">Диаграмма декомпозиции функций — Система управления проектами</text>
+   </g>
+   <g id="text_2">
+    <text style="fill: #444444; font: italic 10px 'DejaVu Sans'; text-anchor: start" x="21.6" y="629.159375" transform="rotate(-0 21.6 629.159375)">Нумерация функций верхнего уровня совпадает с номерами процессов на DFD уровня 1.</text>
+   </g>
+   <g id="text_3">
+    <text style="font: 700 14px 'DejaVu Sans'; text-anchor: middle" x="882" y="100.95375" transform="rotate(-0 882 100.95375)">Система управления проектами</text>
+   </g>
+   <g id="text_4">
+    <text style="font: 700 11.5px 'DejaVu Sans'" transform="translate(106.559297 223.534539)">1. Управление</text>
+    <text style="font: 700 11.5px 'DejaVu Sans'" transform="translate(100.353789 236.412023)">пользователями</text>
+   </g>
+   <g id="text_5">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(127.709297 313.818492)">1.1. Регистрация</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(136.387383 325.576195)">пользователя</text>
+   </g>
+   <g id="text_6">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(109.634531 396.618492)">1.2. Изменение данных</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(136.387383 408.376195)">пользователя</text>
+   </g>
+   <g id="text_7">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(136.206914 479.418492)">1.3. Удаление</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(136.387383 491.176195)">пользователя</text>
+   </g>
+   <g id="text_8">
+    <text style="font: 700 11.5px 'DejaVu Sans'" transform="translate(397.439297 223.534539)">2. Управление</text>
+    <text style="font: 700 11.5px 'DejaVu Sans'" transform="translate(409.897031 236.412023)">проектами</text>
+   </g>
+   <g id="text_9">
+    <text style="font: 10.5px 'DejaVu Sans'; text-anchor: middle" x="465.48" y="319.697344" transform="rotate(-0 465.48 319.697344)">2.1. Создание проекта</text>
+   </g>
+   <g id="text_10">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(420.781172 396.618492)">2.2. Назначение</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(435.71168 408.376195)">владельца</text>
+   </g>
+   <g id="text_11">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(400.046953 479.418492)">2.3. Изменение статуса</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(441.489961 491.176195)">и сроков</text>
+   </g>
+   <g id="text_12">
+    <text style="font: 10.5px 'DejaVu Sans'; text-anchor: middle" x="465.48" y="568.097344" transform="rotate(-0 465.48 568.097344)">2.4. Удаление проекта</text>
+   </g>
+   <g id="text_13">
+    <text style="font: 700 11.5px 'DejaVu Sans'" transform="translate(656.04832 223.534539)">3. Управление составом</text>
+    <text style="font: 700 11.5px 'DejaVu Sans'" transform="translate(709.505352 236.412023)">проекта</text>
+   </g>
+   <g id="text_14">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(711.150117 313.818492)">3.1. Добавление</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(727.756523 325.576195)">участника</text>
+   </g>
+   <g id="text_15">
+    <text style="font: 10.5px 'DejaVu Sans'; text-anchor: middle" x="756.36" y="402.497344" transform="rotate(-0 756.36 402.497344)">3.2. Назначение роли</text>
+   </g>
+   <g id="text_16">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(710.506172 479.418492)">3.3. Исключение</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(727.756523 491.176195)">участника</text>
+   </g>
+   <g id="text_17">
+    <text style="font: 700 11.5px 'DejaVu Sans'" transform="translate(979.199297 223.534539)">4. Управление</text>
+    <text style="font: 700 11.5px 'DejaVu Sans'" transform="translate(995.137578 236.412023)">задачами</text>
+   </g>
+   <g id="text_18">
+    <text style="font: 10.5px 'DejaVu Sans'; text-anchor: middle" x="1047.24" y="319.697344" transform="rotate(-0 1047.24 319.697344)">4.1. Создание задачи</text>
+   </g>
+   <g id="text_19">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1002.541172 396.618492)">4.2. Назначение</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1011.294727 408.376195)">исполнителя</text>
+   </g>
+   <g id="text_20">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(981.806953 479.418492)">4.3. Изменение статуса</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1009.462148 491.176195)">и приоритета</text>
+   </g>
+   <g id="text_21">
+    <text style="font: 10.5px 'DejaVu Sans'; text-anchor: middle" x="1047.24" y="568.097344" transform="rotate(-0 1047.24 568.097344)">4.4. Удаление задачи</text>
+   </g>
+   <g id="text_22">
+    <text style="font: 700 11.5px 'DejaVu Sans'" transform="translate(1267.905078 223.677391)">5. Обсуждение</text>
+    <text style="font: 700 11.5px 'DejaVu Sans'" transform="translate(1298.62625 236.644719)">задач</text>
+   </g>
+   <g id="text_23">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1292.910117 313.818492)">5.1. Добавление</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1300.974609 325.576195)">комментария</text>
+   </g>
+   <g id="text_24">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1299.489844 396.511195)">5.2. Просмотр</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1304.083594 408.483492)">обсуждения</text>
+   </g>
+   <g id="text_25">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1299.726914 479.418492)">5.3. Удаление</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1300.974609 491.176195)">комментария</text>
+   </g>
+   <g id="text_26">
+    <text style="font: 700 11.5px 'DejaVu Sans'" transform="translate(1551.029766 223.534539)">6. Формирование</text>
+    <text style="font: 700 11.5px 'DejaVu Sans'" transform="translate(1583.148008 236.412023)">отчётов</text>
+   </g>
+   <g id="text_27">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1597.370391 313.818492)">6.1. Задачи</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1595.295 325.576195)">по статусам</text>
+   </g>
+   <g id="text_28">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1576.816641 396.618492)">6.2. Просроченные</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1609.630781 408.376195)">задачи</text>
+   </g>
+   <g id="text_29">
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1592.351719 479.418492)">6.3. Загрузка</text>
+    <text style="font: 10.5px 'DejaVu Sans'" transform="translate(1597.307227 491.176195)">участников</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pcfeadc55ce">
+   <rect x="0" y="0" width="1764" height="648"/>
+  </clipPath>
+ </defs>
+</svg>

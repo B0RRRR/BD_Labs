@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1224pt" height="684pt" viewBox="0 0 1224 684" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-19T12:02:49.636365</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.6.3, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 684 
+L 1224 684 
+L 1224 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 56.16 203.76 
+L 300.96 203.76 
+L 300.96 124.56 
+L 56.16 124.56 
+z
+" clip-path="url(#p927094e47e)" style="fill: #9aa5b5"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 56.16 592.56 
+L 300.96 592.56 
+L 300.96 513.36 
+L 56.16 513.36 
+z
+" clip-path="url(#p927094e47e)" style="fill: #9aa5b5"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 934.56 398.16 
+L 1179.36 398.16 
+L 1179.36 318.96 
+L 934.56 318.96 
+z
+" clip-path="url(#p927094e47e)" style="fill: #9aa5b5"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 925.2 219.6 
+L 1206 219.6 
+L 1206 36 
+L 925.2 36 
+z
+" clip-path="url(#p927094e47e)" style="fill: #ffffff; stroke: #888888; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 948.96 110.88 
+L 1013.76 110.88 
+L 1013.76 80.64 
+L 948.96 80.64 
+z
+" clip-path="url(#p927094e47e)" style="fill: #9aa5b5"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 943.2 180 
+L 1008 180 
+L 1008 158.4 
+L 943.2 158.4 
+z
+" clip-path="url(#p927094e47e)" style="fill: #eaf5ea"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 473.76 439.2 
+L 750.24 439.2 
+Q 763.2 439.2 763.2 426.24 
+L 763.2 279.36 
+Q 763.2 266.4 750.24 266.4 
+L 473.76 266.4 
+Q 460.8 266.4 460.8 279.36 
+L 460.8 426.24 
+Q 460.8 439.2 473.76 439.2 
+z
+" clip-path="url(#p927094e47e)" style="fill: #fdf3e1; stroke: #222222; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 50.4 198 
+L 295.2 198 
+L 295.2 118.8 
+L 50.4 118.8 
+z
+" clip-path="url(#p927094e47e)" style="fill: #e8eef7; stroke: #222222; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 50.4 586.8 
+L 295.2 586.8 
+L 295.2 507.6 
+L 50.4 507.6 
+z
+" clip-path="url(#p927094e47e)" style="fill: #e8eef7; stroke: #222222; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 928.8 392.4 
+L 1173.6 392.4 
+L 1173.6 313.2 
+L 928.8 313.2 
+z
+" clip-path="url(#p927094e47e)" style="fill: #e8eef7; stroke: #222222; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 943.2 105.12 
+L 1008 105.12 
+L 1008 74.88 
+L 943.2 74.88 
+z
+" clip-path="url(#p927094e47e)" style="fill: #e8eef7; stroke: #222222; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 956.16 153 
+L 995.04 153 
+Q 1008 153 1008 140.04 
+L 1008 126.36 
+Q 1008 113.4 995.04 113.4 
+L 956.16 113.4 
+Q 943.2 113.4 943.2 126.36 
+L 943.2 140.04 
+Q 943.2 153 956.16 153 
+z
+" clip-path="url(#p927094e47e)" style="fill: #fdf3e1; stroke: #222222; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font: 700 17px 'DejaVu Sans'; text-anchor: middle" x="612" y="29.815234" transform="rotate(-0 612 29.815234)">Контекстная диаграмма (DFD уровня 0) — Система управления проектами</text>
+   </g>
+   <g id="line2d_1">
+    <path d="M 460.8 293.76 
+L 763.2 293.76 
+" clip-path="url(#p927094e47e)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 295.2 140.4 
+L 547.2 140.4 
+" clip-path="url(#p927094e47e)" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 496.8 266.4 
+L 496.8 172.8 
+" clip-path="url(#p927094e47e)" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_4">
+    <path d="M 295.2 565.2 
+L 547.2 565.2 
+" clip-path="url(#p927094e47e)" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_5">
+    <path d="M 496.8 439.2 
+L 496.8 532.8 
+" clip-path="url(#p927094e47e)" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_6">
+    <path d="M 928.8 331.2 
+" clip-path="url(#p927094e47e)" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_7">
+    <path d="M 763.2 374.4 
+" clip-path="url(#p927094e47e)" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: square"/>
+   </g>
+   <g id="text_2">
+    <text style="font: 700 10px 'DejaVu Sans'; text-anchor: start" x="936" y="56.759375" transform="rotate(-0 936 56.759375)">Обозначения</text>
+   </g>
+   <g id="text_3">
+    <text style="font: 9px 'DejaVu Sans'; text-anchor: start" x="1026" y="92.483438" transform="rotate(-0 1026 92.483438)">внешняя сущность</text>
+   </g>
+   <g id="line2d_8">
+    <path d="M 943.2 140.76 
+L 1008 140.76 
+" clip-path="url(#p927094e47e)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="text_4">
+    <text style="font: 9px 'DejaVu Sans'; text-anchor: start" x="1026" y="135.683437" transform="rotate(-0 1026 135.683437)">процесс</text>
+   </g>
+   <g id="line2d_9">
+    <path d="M 1008 158.4 
+L 943.2 158.4 
+L 943.2 180 
+L 1008 180 
+" clip-path="url(#p927094e47e)" style="fill: none; stroke: #222222; stroke-width: 1.6; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_10">
+    <path d="M 982.8 180 
+L 982.8 158.4 
+" clip-path="url(#p927094e47e)" style="fill: none; stroke: #222222; stroke-width: 1.2; stroke-linecap: square"/>
+   </g>
+   <g id="text_5">
+    <text style="font: 9px 'DejaVu Sans'; text-anchor: start" x="1026" y="171.683437" transform="rotate(-0 1026 171.683437)">накопитель данных</text>
+   </g>
+   <g id="line2d_11">
+    <path d="M 943.2 199.44 
+" clip-path="url(#p927094e47e)" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: square"/>
+   </g>
+   <g id="text_6">
+    <text style="font: 9px 'DejaVu Sans'; text-anchor: start" x="1026" y="201.923437" transform="rotate(-0 1026 201.923437)">поток данных</text>
+   </g>
+   <g id="patch_14">
+    <path d="M 547.2 140.4 
+Q 547.2 203.4 547.2 264.946556 
+" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 550.4 258.546556 
+L 547.2 264.946556 
+L 544 258.546556 
+L 550.4 258.546556 
+z
+" style="fill: #222222; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 496.8 172.8 
+Q 396 172.8 296.653444 172.8 
+" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 303.053444 176 
+L 296.653444 172.8 
+L 303.053444 169.6 
+L 303.053444 176 
+z
+" style="fill: #222222; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 547.2 565.2 
+Q 547.2 502.2 547.2 440.653444 
+" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 544 447.053444 
+L 547.2 440.653444 
+L 550.4 447.053444 
+L 544 447.053444 
+z
+" style="fill: #222222; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 496.8 532.8 
+Q 396 532.8 296.653444 532.8 
+" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 303.053444 536 
+L 296.653444 532.8 
+L 303.053444 529.6 
+L 303.053444 536 
+z
+" style="fill: #222222; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 928.8 331.2 
+Q 846 331.2 764.653444 331.2 
+" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 771.053444 334.4 
+L 764.653444 331.2 
+L 771.053444 328 
+L 771.053444 334.4 
+z
+" style="fill: #222222; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 763.2 374.4 
+Q 846 374.4 927.346556 374.4 
+" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 920.946556 371.2 
+L 927.346556 374.4 
+L 920.946556 377.6 
+L 920.946556 371.2 
+z
+" style="fill: #222222; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_20">
+    <path d="M 943.2 199.44 
+Q 975.6 199.44 1006.546556 199.44 
+" style="fill: none; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 1000.146556 196.24 
+L 1006.546556 199.44 
+L 1000.146556 202.64 
+L 1000.146556 196.24 
+z
+" style="fill: #222222; stroke: #222222; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="text_7">
+    <text style="font: 700 14px 'DejaVu Sans'; text-anchor: middle" x="612" y="283.943125" transform="rotate(-0 612 283.943125)">0</text>
+   </g>
+   <g id="text_8">
+    <text style="font: 14px 'DejaVu Sans'" transform="translate(534.838125 362.504656)">Система управления</text>
+    <text style="font: 14px 'DejaVu Sans'" transform="translate(571.964375 378.181594)">проектами</text>
+   </g>
+   <g id="text_9">
+    <text style="font: 700 12px 'DejaVu Sans'; text-anchor: middle" x="172.8" y="161.71125" transform="rotate(-0 172.8 161.71125)">Администратор</text>
+   </g>
+   <g id="text_10">
+    <text style="font: 700 12px 'DejaVu Sans'" transform="translate(123.591562 543.698813)">Руководитель</text>
+    <text style="font: 700 12px 'DejaVu Sans'" transform="translate(144.569062 557.229938)">проекта</text>
+   </g>
+   <g id="text_11">
+    <text style="font: 700 12px 'DejaVu Sans'" transform="translate(988.630313 349.392562)">Участник проекта</text>
+    <text style="font: 700 12px 'DejaVu Sans'" transform="translate(1001.206875 362.829938)">(исполнитель)</text>
+   </g>
+   <g id="text_12">
+    <g id="patch_21">
+     <path d="M 309.646094 125.139063 
+L 467.953906 125.139063 
+Q 469.453906 125.139063 469.453906 123.639063 
+L 469.453906 113.960938 
+Q 469.453906 112.460938 467.953906 112.460938 
+L 309.646094 112.460938 
+Q 308.146094 112.460938 308.146094 113.960938 
+L 308.146094 123.639063 
+Q 308.146094 125.139063 309.646094 125.139063 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font: 10px 'DejaVu Sans'; text-anchor: middle" x="388.8" y="121.559375" transform="rotate(-0 388.8 121.559375)">данные новых пользователей</text>
+   </g>
+   <g id="text_13">
+    <g id="patch_22">
+     <path d="M 321.553906 200.739063 
+L 477.646094 200.739063 
+Q 479.146094 200.739063 479.146094 199.239063 
+L 479.146094 189.560938 
+Q 479.146094 188.060938 477.646094 188.060938 
+L 321.553906 188.060938 
+Q 320.053906 188.060938 320.053906 189.560938 
+L 320.053906 199.239063 
+Q 320.053906 200.739063 321.553906 200.739063 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font: 10px 'DejaVu Sans'; text-anchor: middle" x="399.6" y="197.159375" transform="rotate(-0 399.6 197.159375)">подтверждение регистрации</text>
+   </g>
+   <g id="text_14">
+    <g id="patch_23">
+     <path d="M 295.789062 616.737969 
+L 496.210938 616.737969 
+Q 497.710938 616.737969 497.710938 615.237969 
+L 497.710938 594.362031 
+Q 497.710938 592.862031 496.210938 592.862031 
+L 295.789062 592.862031 
+Q 294.289062 592.862031 294.289062 594.362031 
+L 294.289062 615.237969 
+Q 294.289062 616.737969 295.789062 616.737969 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font: 10px 'DejaVu Sans'" transform="translate(295.789062 601.960469)">данные проектов, состав участников,</text>
+    <text style="font: 10px 'DejaVu Sans'" transform="translate(301.104688 613.158281)">задачи и назначения исполнителей</text>
+   </g>
+   <g id="text_15">
+    <g id="patch_24">
+     <path d="M 307.040625 517.539062 
+L 434.559375 517.539062 
+Q 436.059375 517.539062 436.059375 516.039062 
+L 436.059375 506.360937 
+Q 436.059375 504.860937 434.559375 504.860937 
+L 307.040625 504.860937 
+Q 305.540625 504.860937 305.540625 506.360937 
+L 305.540625 516.039062 
+Q 305.540625 517.539062 307.040625 517.539062 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font: 10px 'DejaVu Sans'; text-anchor: middle" x="370.8" y="513.959375" transform="rotate(-0 370.8 513.959375)">отчёты о ходе проектов</text>
+   </g>
+   <g id="text_16">
+    <g id="patch_25">
+     <path d="M 773.678906 303.537969 
+L 918.321094 303.537969 
+Q 919.821094 303.537969 919.821094 302.037969 
+L 919.821094 281.162031 
+Q 919.821094 279.662031 918.321094 279.662031 
+L 773.678906 279.662031 
+Q 772.178906 279.662031 772.178906 281.162031 
+L 772.178906 302.037969 
+Q 772.178906 303.537969 773.678906 303.537969 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font: 10px 'DejaVu Sans'" transform="translate(773.678906 288.760469)">изменение статуса задачи,</text>
+    <text style="font: 10px 'DejaVu Sans'" transform="translate(810.382031 299.958281)">комментарии</text>
+   </g>
+   <g id="text_17">
+    <g id="patch_26">
+     <path d="M 789.458594 426.040156 
+L 902.541406 426.040156 
+Q 904.041406 426.040156 904.041406 424.540156 
+L 904.041406 403.459844 
+Q 904.041406 401.959844 902.541406 401.959844 
+L 789.458594 401.959844 
+Q 787.958594 401.959844 787.958594 403.459844 
+L 787.958594 424.540156 
+Q 787.958594 426.040156 789.458594 426.040156 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font: 10px 'DejaVu Sans'" transform="translate(789.458594 411.058281)">назначенные задачи,</text>
+    <text style="font: 10px 'DejaVu Sans'" transform="translate(796.797656 422.460469)">обсуждения задач</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p927094e47e">
+   <rect x="0" y="0" width="1224" height="684"/>
+  </clipPath>
+ </defs>
+</svg>

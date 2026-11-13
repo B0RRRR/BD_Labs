@@ -55,338 +55,199 @@ ORDER BY 1, 2;
 | ≥ 5 некорректных запросов | 12 в `constraints_test.sql` |
 
 ---
+## 2. Алгоритм решения доп. задания в migration.sql
 
-## 2. Разбор конструкций из кода
+### Шаг 1. Подготовка
 
-| Конструкция | Объяснение |
+1. База — в исходном состоянии ЛР (сброс — шаг 10).
+2. **Посмотреть реальные данные**, а не верить `data.sql`: `\d таблица`, `SELECT * FROM ...`.
+   В базе могут быть лишние строки, id с «дырками» (SERIAL не возвращает номера после ошибок).
+3. `created_at` в `data.sql` = **момент загрузки**, а не дата из прошлого.
+
+### Шаг 2. Разобрать ТЗ
+
+Для каждого пункта — что это за изменение:
+
+| Формулировка | Тип изменения |
 |---|---|
-| `SERIAL` | целое число с автоинкрементом. Под капотом: `INTEGER` + последовательность (sequence) + `DEFAULT nextval(...)` |
-| `PRIMARY KEY` | = `UNIQUE` + `NOT NULL`, в таблице только один. Автоматически создаётся индекс |
-| `REFERENCES users (user_id)` | внешний ключ: значение должно существовать в `users.user_id` (или быть NULL) |
-| `VARCHAR(100)` | строка до 100 символов; длиннее — ошибка |
-| `TEXT` | строка любой длины |
-| `NUMERIC(5,1)` | точное число: всего 5 цифр, из них 1 после запятой (до 9999.9) |
-| `SMALLINT` | целое 2 байта (−32768..32767) |
-| `TIMESTAMP` / `DATE` | дата+время / только дата |
-| `DEFAULT now()` | если значение не указано в INSERT — подставится текущее время |
-| `CONSTRAINT имя CHECK (...)` | именованное ограничение; имя видно в тексте ошибки и нужно для `DROP CONSTRAINT` |
-| `email LIKE '%_@_%._%'` | `%` — любое кол-во символов, `_` — ровно один символ. Значит: хотя бы 1 символ, `@`, хотя бы 1 символ, точка, хотя бы 1 символ |
-| `CHECK (end_date IS NULL OR end_date >= start_date)` | дата окончания может быть неизвестна; если известна — не раньше начала |
-| `length(trim(body)) > 0` | `trim` убирает пробелы по краям — комментарий из одних пробелов запрещён |
-| `DROP TABLE IF EXISTS ... CASCADE` | удалить, если есть (без ошибки, если нет); CASCADE удаляет и внешние ключи, ссылающиеся на таблицу |
-| `BEGIN; ... ROLLBACK;` | транзакция, изменения отменяются — так в `constraints_test.sql` показаны CASCADE/SET NULL без порчи данных |
-| `BEGIN; ... COMMIT;` в миграции | если хоть одна команда упадёт, не применится ничего |
+| «у X появляется поле Y» | новый столбец (`ADD COLUMN`) |
+| «появляются отделы / встречи / теги» | новая таблица + FK |
+| «у X может быть несколько Y» (а было одно) | 1:N → M:N: таблица связи + перенос данных + `DROP COLUMN` |
+| «добавить статус / роль» | `DROP CONSTRAINT` + `ADD CONSTRAINT` (CHECK) |
+| «поле теперь обязательное» | add → fill → constrain |
+| «при удалении X удалять / не удалять Y» | пересоздать FK с другим `ON DELETE` |
+| «уникально в пределах …» | составной `UNIQUE` |
+| «хранить историю изменений» | отдельная таблица-журнал (1:N) |
+| правило, которое смотрит **в другую строку/таблицу** | шаг 4 — самое сложное |
 
----
+### Шаг 3. Связи и ограничения
 
-## 3. Вопросы по теории
+**Вид связи** — два вопроса: «сколько B у одного A?» и «сколько A у одного B?»
 
-**Что такое 1НФ, 2НФ, 3НФ?**
-- **1НФ** — значения атомарны (нет списков в ячейке), нет повторяющихся групп, есть ключ.
-- **2НФ** — 1НФ + каждый неключевой атрибут зависит от *всего* составного ключа, а не от его части.
-- **3НФ** — 2НФ + нет транзитивных зависимостей: неключевой атрибут не зависит от другого неключевого.
-- Пример нарушения 3НФ: хранить в `tasks` столбец `project_name` (`task_id → project_id → project_name`).
-- Пример нарушения 2НФ: хранить в `project_members` столбец `user_email` — зависит только от `user_id`, части ключа.
-- Пример нарушения 1НФ: `projects.members = 'Иванов, Петров'`.
+| Ответ | Как сделать |
+|---|---|
+| много — один (1:N) | FK на стороне «много» |
+| не больше одного с обеих сторон (1:1) | FK + `UNIQUE` на нём |
+| много — много (M:N) | таблица связи, `PRIMARY KEY (a_id, b_id)`; атрибуты связи (роль, дата, оценка) — **в неё** |
+| задача → задача | FK на свою таблицу + `CHECK (parent_id <> id)` |
+| две разные связи между одними таблицами | два разных FK (`owner_id` и `project_members`) |
 
-**Чем PRIMARY KEY отличается от UNIQUE?** PK — один на таблицу, NOT NULL, на него ссылаются FK.
-UNIQUE может быть несколько, и NULL в UNIQUE-столбце допускается (причём несколько NULL — тоже).
+**Слово ТЗ → ограничение:**
 
-**Правила ON DELETE:**
-- `CASCADE` — удалить зависимые строки вместе с родителем;
-- `SET NULL` — в зависимых строках поставить NULL (столбец должен допускать NULL!);
-- `RESTRICT` / `NO ACTION` (по умолчанию) — запретить удаление, пока есть ссылки.
-  Разница: `RESTRICT` проверяет сразу, `NO ACTION` — в конце оператора (можно отложить через `DEFERRABLE`).
-- `SET DEFAULT` — поставить значение по умолчанию.
+| В тексте | Пишем |
+|---|---|
+| «обязательно» / «может отсутствовать» | `NOT NULL` / без него |
+| «не повторяется» / «в пределах проекта» | `UNIQUE (x)` / `UNIQUE (project_id, x)` |
+| «от 1 до 5», «одно из …», «начинается с https://» | `CHECK (x BETWEEN 1 AND 5)`, `CHECK (x IN (...))`, `CHECK (x LIKE 'https://%')` |
+| «если A, то B» | `CHECK (NOT A OR B)` |
+| «либо оба, либо ни одного» | `CHECK ((a IS NULL) = (b IS NULL))` |
+| «не оба сразу» | `CHECK (a IS NULL OR b IS NULL)` |
+| «по умолчанию …» | `DEFAULT` — **только если так сказано**; «обязательно» ≠ DEFAULT |
+| «удаляются вместе» / «остаётся без …» / «нельзя удалить, пока …» | `CASCADE` / `SET NULL` / `RESTRICT` |
+| деньги / дата / дата+время / да-нет | `NUMERIC(12,2)` / `DATE` / `TIMESTAMP` / `BOOLEAN` |
 
-**Почему у `assignee_id` SET NULL, а не CASCADE?** Если уволили сотрудника, задача не должна
-исчезнуть — её просто переназначат.
+CHECK пропускает NULL — от NULL защищает только `NOT NULL`. UNIQUE допускает несколько NULL.
 
-**Почему у `comments.author_id` RESTRICT?** Чтобы случайно не стереть историю обсуждений.
-Сначала нужно явно решить, что делать с комментариями.
+### Шаг 4. Правила «через другую таблицу» — готовые приёмы
 
-**Почему `assignee_id` без NOT NULL?** Задача может быть ещё никому не назначена.
+CHECK видит **только свою строку**. Если правило сравнивает с другой строкой/таблицей —
+выбрать приём:
 
-**Что будет, если в CHECK попадёт NULL?** CHECK пропускает строку, если условие TRUE **или NULL**.
-Поэтому `CHECK (priority BETWEEN 1 AND 5)` пропустит NULL — от NULL защищает только `NOT NULL`.
+| Правило в ТЗ | Приём |
+|---|---|
+| «X из того же проекта / отдела, что и Y» | в цели `UNIQUE (id, project_id)`; в своей таблице составной FK `(x_id, project_id) → цель (id, project_id)` |
+| «лидер / руководитель — участник этой же команды» | составной FK `(team_id, leader_id) → team_members (team_id, user_id)` |
+| «нельзя на своё» (реакция на свой комментарий) | скопировать автора в строку + составной FK `(comment_id, author_id) → comments` `ON UPDATE CASCADE` + `CHECK (user_id <> author_id)` |
+| «назначено либо человеку, либо команде» | **два** nullable FK + `CHECK (a IS NULL OR b IS NULL)`. Не делать `type + id` — у такого id не может быть FK |
+| «связь симметричная, хранить один раз» | `CHECK (a_id < b_id)` (заодно запрещает a = b) + вставка через `LEAST(x,y), GREATEST(x,y)`; поиск в обе стороны — `UNION` двух подзапросов |
+| «иерархия любой глубины, без рекурсии» | `parent_id` (+ CASCADE) **и** таблица всех пар `(ancestor_id, descendant_id, depth)`; у каждой строки «сама с собой», depth 0 |
+| «история изменений» | таблица-журнал с `SERIAL` (повторы допустимы), старое значение nullable, перенос текущего состояния `INSERT ... SELECT` |
 
-**Что такое составное ограничение?** Ограничение на несколько столбцов сразу:
-`PRIMARY KEY (project_id, user_id)`, `UNIQUE (project_id, title)`, `CHECK (end_date >= start_date)`.
+**Детали составного FK:**
+- цель обязана иметь `UNIQUE`/`PK` ровно на эти столбцы, иначе
+  `there is no unique constraint matching given keys`;
+- обнулять только один столбец: `ON DELETE SET NULL (столбец)` — обычный `SET NULL`
+  обнулит **все** столбцы ключа (в т.ч. NOT NULL / PK) и упадёт;
+- если хоть один столбец ключа NULL — FK не проверяется (пустая ссылка разрешена);
+- копия столбца ради FK — осознанное нарушение 2НФ: «без копии правило не выразить, FK не
+  даёт копии разойтись».
 
-**Зачем таблица `project_members`?** Связь M:N в реляционной модели реализуется только через
-промежуточную таблицу. Плюс у связи есть свои атрибуты — `role`, `joined_at`.
+**Взаимная ссылка двух таблиц** (команда ↔ участники): создать первую без этого FK →
+создать вторую → `ALTER TABLE первая ADD CONSTRAINT ... FOREIGN KEY ...`. Данные: сущность
+без ссылки → участники → `UPDATE` ссылки.
 
-**Почему суррогатный ключ (`id`), а не email?** Email может измениться — тогда пришлось бы
-обновлять все ссылки. `id` никогда не меняется и короче.
+**Чего ограничения НЕ умеют** (говорить честно): сравнить с **предыдущей** строкой, с
+**последней** строкой другой таблицы, «хотя бы одна запись должна быть», «дата позже, чем в
+другой таблице», что-то **сделать** при изменении (вставить в историю). Это — приложение
+(несколько команд в одной транзакции) или триггер.
 
-**SERIAL vs IDENTITY?** `GENERATED ALWAYS AS IDENTITY` — стандарт SQL, более новый способ.
-`SERIAL` — классический способ PostgreSQL, работает так же для наших целей.
-
-**Чем DDL отличается от DML?** DDL — структура (`CREATE`, `ALTER`, `DROP`). DML — данные
-(`INSERT`, `UPDATE`, `DELETE`, `SELECT`).
-
-### PRIMARY KEY и FOREIGN KEY — когда что
-
-| | **PRIMARY KEY** | **FOREIGN KEY** |
-|---|---|---|
-| Отвечает на вопрос | «как отличить эту строку от других **в этой** таблице?» | «к какой строке **другой** таблицы относится эта строка?» |
-| Сколько в таблице | ровно один, всегда | сколько нужно: 0, 1, 2… |
-| Значения | уникальные, не NULL | могут повторяться; NULL можно, если нет NOT NULL |
-| Синтаксис | `PRIMARY KEY` | `REFERENCES таблица (столбец)` |
-
-Пример: в `tasks` `task_id` — PK (номер самой задачи), `project_id` — FK (номер проекта, к
-которому она относится; у многих задач он одинаковый).
-
-**Какой PK выбрать:**
-
-| Таблица | PK | Пример |
-|---|---|---|
-| Сущность | `xxx_id SERIAL PRIMARY KEY` | `users.user_id`, `projects.project_id` |
-| Таблица связи M:N | составной из двух FK — заодно запрещает дубли | `PRIMARY KEY (project_id, user_id)` |
-| Справочник с кодом | сам код | `code VARCHAR(20) PRIMARY KEY` |
-
-Email / название — уникальны, но это `UNIQUE`, а не PK: PK один, UNIQUE — сколько угодно.
-
-**Где ставить FK — по формулировке требования:**
-
-| Фраза | Связь | Куда FK |
-|---|---|---|
-| «задача относится к проекту», «у проекта много задач» | 1:N | на стороне «много»: `tasks.project_id` |
-| «много X у Y **и** много Y у X» | M:N | новая таблица связи с **двумя** FK |
-| «у сотрудника один профиль» | 1:1 | FK + `UNIQUE` на нём |
-| «задача может быть подзадачей другой задачи» | на себя | `parent_task_id REFERENCES tasks` |
-| «обязательно есть» / «может быть» | — | FK `NOT NULL` / без `NOT NULL` |
-| «удаляются вместе» / «ссылка очищается» / «удалить нельзя» | — | `CASCADE` / `SET NULL` / `RESTRICT` |
-
-**Частые ошибки:**
-1. Ссылка на несуществующее имя: `REFERENCES users (id)` вместо `users (user_id)`.
-2. FK типа `SERIAL` — неверно. FK хранит **уже существующий** номер → `INTEGER`.
-3. FK можно направить только на PK или `UNIQUE`-столбец.
-4. Таблицу, на которую ссылаются, создают **раньше** (`meetings` → потом `users_on_meetings`).
-5. Столбец может быть одновременно FK и частью PK — это норма для таблицы связи.
-
-**Быстрый алгоритм на защите:**
-1. Что отличает одну строку от другой? → PK.
-2. Столбец `..._id` — **мой** номер или **чужой**? Мой → PK, чужой → FK.
-3. Сколько B у одного A и сколько A у одного B? «много–один» → FK на стороне «много»;
-   «много–много» → таблица связи.
-
-**`CREATE TABLE` vs `ALTER TABLE`:**
-
-| | `CREATE TABLE t ( ... );` | `ALTER TABLE t ...;` |
-|---|---|---|
-| Когда | таблицы ещё нет | таблица уже есть |
-| Скобки после имени | да | **нет** |
-| Столбец | `имя ТИП ...` | `ADD COLUMN имя ТИП ...` |
-| Ограничение | `CONSTRAINT имя ...` | `ADD CONSTRAINT имя ...` |
-
----
-
-## 4. Если преподаватель просит изменить условия
-
-### Алгоритм (говорить вслух)
-
-1. Понять, что меняется: новый атрибут? новая сущность? тип связи? ограничение?
-2. Пересоздавать БД нельзя → только `ALTER TABLE` / `CREATE TABLE`, всё в `BEGIN ... COMMIT`.
-3. Если новое ограничение противоречит **существующим данным** — сначала `UPDATE`
-   данных, потом добавить ограничение (иначе PostgreSQL выдаст ошибку).
-4. Проверить: `\d таблица` + `SELECT` + запрос, который теперь должен падать.
-
-Все рецепты ниже проверены на этой БД. Готовый пример полной миграции — `migration.sql`.
-
----
-
-### 4.1. Добавить атрибут (столбец)
-
-«У проекта должен быть бюджет», «у пользователя — телефон»:
+### Шаг 5. Порядок команд в migration.sql
 
 ```sql
-ALTER TABLE projects ADD COLUMN budget NUMERIC(12, 2) CHECK (budget >= 0);
-ALTER TABLE users    ADD COLUMN phone  VARCHAR(20) UNIQUE;
-```
-
-Старые строки получат NULL — это нормально, раз столбец необязательный.
-
-### 4.2. Добавить ОБЯЗАТЕЛЬНЫЙ столбец (NOT NULL) в таблицу с данными
-
-Вариант 1 — есть разумное значение по умолчанию:
-```sql
-ALTER TABLE users ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true;
-```
-
-Вариант 2 — значение надо вычислить (в 3 шага):
-```sql
--- «У задачи должен быть автор (кто её создал)»
-ALTER TABLE tasks ADD COLUMN created_by INTEGER REFERENCES users (user_id);
-UPDATE tasks t SET created_by = p.owner_id          -- старым задачам — владельца проекта
-FROM projects p WHERE p.project_id = t.project_id;
-ALTER TABLE tasks ALTER COLUMN created_by SET NOT NULL;
-```
-
-### 4.3. Изменить список допустимых значений (CHECK)
-
-«У проекта добавляется статус on_hold». CHECK нельзя изменить — только удалить и создать заново:
-```sql
-ALTER TABLE projects DROP CONSTRAINT chk_projects_status;
-ALTER TABLE projects ADD CONSTRAINT chk_projects_status
-    CHECK (status IN ('planned', 'active', 'on_hold', 'completed', 'cancelled'));
-```
-
-### 4.4. Добавить ограничение, которому старые данные не соответствуют
-
-«Срок у задачи теперь обязателен»:
-```sql
--- сразу SET NOT NULL упадёт: у задачи 5 due_date = NULL
-UPDATE tasks SET due_date = CURRENT_DATE + 30 WHERE due_date IS NULL;
-ALTER TABLE tasks ALTER COLUMN due_date SET NOT NULL;
-```
-Альтернатива для CHECK/FK — `ADD CONSTRAINT ... NOT VALID`: проверяет только новые строки.
-
-### 4.5. Переименовать / изменить тип
-
-```sql
-ALTER TABLE tasks    RENAME COLUMN due_date TO deadline;
-ALTER TABLE comments RENAME TO task_comments;
-ALTER TABLE users    ALTER COLUMN full_name TYPE VARCHAR(200);
-ALTER TABLE tasks    ALTER COLUMN priority  TYPE INTEGER;
--- если тип несовместим: ... TYPE INTEGER USING столбец::INTEGER
-```
-
-### 4.6. Изменить / убрать значение по умолчанию
-
-```sql
-ALTER TABLE tasks ALTER COLUMN priority SET DEFAULT 2;
-ALTER TABLE tasks ALTER COLUMN priority DROP DEFAULT;
-```
-
-### 4.7. Изменить правило ON DELETE
-
-«При удалении пользователя его комментарии тоже удаляются». FK тоже нельзя изменить — только пересоздать:
-```sql
-ALTER TABLE comments DROP CONSTRAINT comments_author_id_fkey;
-ALTER TABLE comments ADD CONSTRAINT comments_author_id_fkey
-    FOREIGN KEY (author_id) REFERENCES users (user_id) ON DELETE CASCADE;
-```
-
-### 4.8. Изменить UNIQUE
-
-«Названия проектов уникальны только в пределах одного владельца»:
-```sql
-ALTER TABLE projects DROP CONSTRAINT projects_name_key;
-ALTER TABLE projects ADD CONSTRAINT uq_projects_owner_name UNIQUE (owner_id, name);
-```
-
-### 4.9. Новая сущность со связью M:N — теги задач
-
-```sql
-CREATE TABLE tags (
-    tag_id SERIAL      PRIMARY KEY,
-    name   VARCHAR(50) NOT NULL UNIQUE
-);
-CREATE TABLE task_tags (
-    task_id INTEGER NOT NULL REFERENCES tasks (task_id) ON DELETE CASCADE,
-    tag_id  INTEGER NOT NULL REFERENCES tags (tag_id)  ON DELETE CASCADE,
-    PRIMARY KEY (task_id, tag_id)
-);
-INSERT INTO tags (name) VALUES ('frontend'), ('backend'), ('bug');
-INSERT INTO task_tags VALUES (2, 1), (3, 2);
-```
-
-### 4.10. Связь 1:N превращается в M:N — «у задачи может быть несколько исполнителей»
-
-Главное — **перенести существующие данные**, потом удалить старый столбец:
-```sql
-CREATE TABLE task_assignees (
-    task_id INTEGER NOT NULL REFERENCES tasks (task_id) ON DELETE CASCADE,
-    user_id INTEGER NOT NULL REFERENCES users (user_id) ON DELETE CASCADE,
-    PRIMARY KEY (task_id, user_id)
-);
-INSERT INTO task_assignees (task_id, user_id)
-SELECT task_id, assignee_id FROM tasks WHERE assignee_id IS NOT NULL;
-ALTER TABLE tasks DROP COLUMN assignee_id;
-```
-
-### 4.11. Вынести статус в справочник (отдельную таблицу)
-
-«Статусы задач должны храниться в отдельной таблице»:
-```sql
-CREATE TABLE task_statuses (
-    status_id SERIAL      PRIMARY KEY,
-    name      VARCHAR(20) NOT NULL UNIQUE
-);
-INSERT INTO task_statuses (name) VALUES ('todo'), ('in_progress'), ('review'), ('done');
-
-ALTER TABLE tasks ADD COLUMN status_id INTEGER REFERENCES task_statuses (status_id);
-UPDATE tasks t SET status_id = s.status_id
-FROM task_statuses s WHERE s.name = t.status;          -- перенос данных
-ALTER TABLE tasks ALTER COLUMN status_id SET NOT NULL;
-ALTER TABLE tasks DROP COLUMN status;                   -- CHECK удалится вместе со столбцом
-```
-
-### 4.12. Подзадачи (связь таблицы с самой собой)
-
-```sql
-ALTER TABLE tasks
-    ADD COLUMN parent_task_id INTEGER REFERENCES tasks (task_id) ON DELETE CASCADE;
-ALTER TABLE tasks
-    ADD CONSTRAINT chk_tasks_not_self_parent CHECK (parent_task_id <> task_id);
-UPDATE tasks SET parent_task_id = 2 WHERE task_id = 3;   -- задача 3 — подзадача задачи 2
-```
-
-### 4.13. «Исполнитель задачи должен быть участником её проекта» (составной FK)
-
-```sql
-ALTER TABLE tasks
-    ADD CONSTRAINT fk_tasks_assignee_member
-    FOREIGN KEY (project_id, assignee_id)
-    REFERENCES project_members (project_id, user_id);
--- теперь назначить на задачу проекта 1 пользователя 2 (не участник) — ошибка
-```
-Если `assignee_id` = NULL, составной FK не проверяется — неназначенные задачи разрешены.
-
-### 4.14. Учёт времени / трудозатрат
-
-Полностью сделано в `migration.sql`: столбец `tasks.estimated_hours` + таблица `time_logs`
-с `CHECK (hours > 0 AND hours <= 24)` и `UNIQUE (task_id, user_id, work_date)`.
-
-### 4.15. Удалить столбец / таблицу
-
-```sql
-ALTER TABLE tasks DROP COLUMN description;
-DROP TABLE comments;
-```
-(Лучше уточнить у преподавателя — это теряет данные.)
-
----
-
-## 5. Шаблон migration.sql под новое требование
-
-```sql
--- Требование: <записать формулировку преподавателя>
+-- Требование: <кратко>
 BEGIN;
-
--- 1. Структура: ALTER TABLE ... ADD COLUMN / CREATE TABLE ...
--- 2. Перенос/заполнение существующих данных: UPDATE / INSERT ... SELECT
--- 3. Ограничения: SET NOT NULL / ADD CONSTRAINT ...
--- 4. Удаление старого (если нужно): DROP COLUMN ...
-
+-- 1. Цели для составных FK:            ALTER TABLE ... ADD CONSTRAINT uq_... UNIQUE (id, x);
+-- 2. Новые таблицы (родители → дети):   CREATE TABLE ...;
+-- 3. Новые столбцы (БЕЗ NOT NULL):      ALTER TABLE ... ADD COLUMN ...;
+-- 4. Перенос / заполнение данных:      UPDATE ... / INSERT INTO ... SELECT ...;
+-- 5. Ужесточение:                       ALTER COLUMN ... SET NOT NULL; ADD CONSTRAINT ...;
+-- 6. Отложенные FK (взаимные ссылки):   ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY ...;
+-- 7. Удаление старого (после переноса): DROP CONSTRAINT / DROP COLUMN;
+-- 8. Тестовые данные.
 COMMIT;
-
--- Проверка
-\d имя_таблицы
-SELECT ... ;
--- запрос, который теперь должен падать
+-- 9. Проверки.
 ```
 
-Запишите формулировку преподавателя и определите тип изменения:
+**Изменение существующего:**
 
-Формулировка звучит как…	Это значит	Что делать (рецепт в cheatsheet.md)
-«у X должно быть ещё поле Y»	новый атрибут	ADD COLUMN (4.1, 4.2)
-«появляются отделы, теги, спринты…»	новая сущность	CREATE TABLE + FK (4.9)
-«у задачи может быть несколько исполнителей»	связь 1:N → M:N	таблица связи + перенос данных (4.10)
-«добавить статус / роль»	изменился CHECK	DROP CONSTRAINT + ADD CONSTRAINT (4.3)
-«поле теперь обязательное»	NOT NULL	заполнить пустые строки, потом SET NOT NULL (4.4)
-«при удалении X удалять / не удалять Y»	ON DELETE	пересоздать FK (4.7)
-«уникально в пределах…»	UNIQUE	DROP / ADD CONSTRAINT (4.8)
-«статусы хранить в отдельной таблице»	справочник	4.11
-«у задачи бывают подзадачи»	связь таблицы с самой собой	4.12
+| Задача | Как |
+|---|---|
+| обязательный столбец в таблице с данными | `ADD COLUMN` без NOT NULL → `UPDATE` всем → `SET NOT NULL` |
+| изменить CHECK / ON DELETE / UNIQUE | `DROP CONSTRAINT имя` + `ADD CONSTRAINT имя ...` (имя — запросом из раздела 0) |
+| перенести данные в новую таблицу | `INSERT INTO new (...) SELECT ... FROM old WHERE x IS NOT NULL` → проверить → `DROP COLUMN` |
+| разделить столбец (ФИО) | `split_part(s, ' ', n)`; пустую часть → NULL через `NULLIF(..., '')` |
+| default / тип / имя | `SET DEFAULT` / `DROP DEFAULT`; `TYPE ... USING`; `RENAME COLUMN` / `RENAME TO` |
+
+Новое ограничение проверяет **и старые строки** — если не проходят, сначала `UPDATE`.
+
+### Шаг 6. Тестовые данные
+
+1. Вставлять **родителей раньше детей**.
+2. Id новых строк неизвестны (SERIAL) — находить подзапросом по уникальным полям:
+   `(SELECT task_id FROM tasks WHERE project_id = 1 AND title = '...')`.
+   Значения-копии (автор, проект) — тоже подзапросом, не руками.
+3. Связи видны **с обеих сторон**: в M:N у A несколько B **и** у B несколько A.
+4. У необязательной связи — строка с NULL; у справочника — строка **без ссылок** (проверить
+   разрешённое удаление).
+5. Удалить из базы можно только **пользователя 6 (Волкова)** — у остальных комментарии или
+   свои проекты (RESTRICT). Для проверки `CASCADE`/`SET NULL` по сотруднику — задействовать её.
+6. Даты событий — **после** `created_at`: `(SELECT created_at ...) + INTERVAL '1 day'`.
+7. Переключение между взаимоисключающими столбцами — **одним** `UPDATE`
+   (`SET assignee_id = NULL, team_id = 2`), иначе на миг заполнены оба и сработает CHECK.
+8. История / цепочки — последовательные и заканчиваются текущим состоянием.
+
+### Шаг 7. Проверки
+
+```sql
+-- должно пройти (данные не теряем):
+BEGIN; DELETE FROM ... ; SELECT ... ; ROLLBACK;
+
+-- должно упасть — по одной, в комментарии имя ограничения:
+INSERT INTO ... ;   -- chk_...
+```
+
+Обязательно проверить:
+- каждый `ON DELETE` (CASCADE — дети исчезли, SET NULL — ссылка пустая, RESTRICT — ошибка);
+- каждый CHECK / UNIQUE / PK / FK хотя бы одной ошибочной командой;
+- **попытку обойти** правило (вписать в копию «не того» автора, «обратную» пару B–A);
+- `DEFAULT`: вставка без этого поля.
+
+### Шаг 8. Запуск и отладка
+
+Проверять на копии, а не на `project_db`:
+```bash
+createdb tmp_db
+psql -d tmp_db -f schema.sql && psql -d tmp_db -f data.sql
+psql -d tmp_db -f migration.sql
+dropdb tmp_db
+```
+
+| Ошибка | Причина |
+|---|---|
+| `syntax error at or near "ALTER"` / `"COMMIT"` (следующая команда) | нет `;` после `)` |
+| `syntax error at or near ")"` | лишняя запятая перед `)` |
+| `syntax error at or near "ADD"` | `ADD CONSTRAINT` внутри `CREATE TABLE` (там просто `CONSTRAINT`) |
+| `syntax error at or near "("` | скобки после `ALTER TABLE t` |
+| `column "x" does not exist` / `relation "x" does not exist` | не то имя: в ЛР `users (user_id)`, `projects (project_id)` |
+| `there is no unique constraint matching given keys` | FK на неуникальный столбец/пару → добавить `UNIQUE` в цель или ссылаться на пару |
+| `column ... contains null values` | сразу `NOT NULL` на таблице с данными → add → fill → constrain |
+| `null value in column ... violates not-null` при удалении | составной FK с обычным `SET NULL` → `SET NULL (столбец)` |
+| `duplicate key value` / `already exists` в UNIQUE | в данных повтор: в 1:1 два раза один и тот же, в паре — B–A и A–B |
+| `current transaction is aborted` | раньше была ошибка → `ROLLBACK;`, исправить, запустить заново |
+| `relation ... already exists` | миграция уже применена → сброс (шаг 10) |
+| «обязательное» поле заполняется само | лишний `DEFAULT` |
+| в ошибке `таблица_check` — непонятно что | давать имена: `chk_` (CHECK), `uq_` (UNIQUE), `fk_` (FK) |
+
+**pgAdmin:** выделенный фрагмент + F5 выполняет только его; показывается результат
+последнего запроса; ошибочные проверки запускать по одной.
+
+### Шаг 9. Как объяснять преподавателю
+
+Схема ответа на «почему так?»:
+> **требование** → **решение** → **альтернатива, от которой отказался, и почему**.
+
+Пример: «Лидер должен быть участником команды. CHECK не видит другую таблицу, поэтому —
+составной FK `(team_id, leader_id)` на таблицу участников. Простой FK на `users` проверил бы
+только существование человека, а не членство.»
+
+Если решение не приходит — рассуждать вслух: что даёт очевидный вариант и **где именно** он
+не справляется. Это уже половина ответа.
+
+### Шаг 10. Сброс к исходной ЛР
+
+`schema.sql` удаляет только свои 5 таблиц. Новые таблицы — удалить вручную:
+```sql
+DROP TABLE IF EXISTS <новые таблицы> CASCADE;
+```
+затем `schema.sql` → `data.sql`. Проверка: `\dt` — 5 таблиц; 6 users, 3 projects,
+9 project_members, 8 tasks, 6 comments.
