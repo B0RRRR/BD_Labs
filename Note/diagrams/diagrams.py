@@ -267,8 +267,8 @@ def context_diagram():
     cat = Box(XR, 5.1, BW, 0.7)
     lead = Box(XL, 2.95, BW, 2.2)
     mem = Box(XR, 2.95, BW, 2.2)
-    git = Box(XL, 1.05, BW, 0.85)
-    ntf = Box(XR, 1.05, BW, 0.85)
+    git = Box(XL, 1.1, BW, 1.05)
+    ntf = Box(XR, 1.1, BW, 1.05)
 
     proc(p, "0", "Система\nуправления\nпроектами")
     ext(adm, "Администратор")
@@ -289,10 +289,10 @@ def context_diagram():
     # ---------------------------------------------------------------- руководитель (слева)
     ys = [lead.y + 0.95, lead.y + 0.33, lead.y - 0.33, lead.y - 0.95]
     xm = (lead.r + p.l) / 2
-    fl([lead.right(ys[0] - lead.y), (p.l, ys[0])]);  lab(xm, ys[0], "данные проекта")
+    fl([lead.right(ys[0] - lead.y), (p.l, ys[0])]);  lab(xm, ys[0], "проект, заказчик,\nдоговор")
     fl([lead.right(ys[1] - lead.y), (p.l, ys[1])]);  lab(xm, ys[1], "участник и роль")
-    fl([lead.right(ys[2] - lead.y), (p.l, ys[2])]);  lab(xm, ys[2], "задача,\nисполнитель,\nсрок, метки")
-    fl([(p.l, ys[3]), lead.right(ys[3] - lead.y)]);  lab(xm, ys[3], "отчёт о ходе\nпроекта")
+    fl([lead.right(ys[2] - lead.y), (p.l, ys[2])]);  lab(xm, ys[2], "задачи (в т. ч.\nфайлом CSV),\nспринты")
+    fl([(p.l, ys[3]), lead.right(ys[3] - lead.y)]);  lab(xm, ys[3], "отчёты: риски,\nдоговоры")
 
     # ---------------------------------------------------------------- участник (справа)
     xm = (p.r + mem.l) / 2
@@ -302,12 +302,14 @@ def context_diagram():
     fl([mem.left(ys[3] - mem.y), (p.r, ys[3])]);  lab(xm, ys[3], "комментарий")
 
     # ---------------------------------------------------------------- Git и сервис уведомлений
-    fl([git.right(), (2.95, git.y), (2.95, p.b)])
-    lab((git.r + 2.95) / 2, git.y, "коммит с ключом\nзадачи (SHOP-42)")
-    fl([(3.65, p.b), (3.65, ntf.y + 0.15), ntf.left(0.15)])
-    lab((3.65 + ntf.l) / 2, ntf.y + 0.15, "назначение,\nэскалация")
-    fl([(3.35, p.b), (3.35, ntf.y - 0.15), ntf.left(-0.15)])
-    lab((3.35 + ntf.l) / 2, ntf.y - 0.15, "новый\nкомментарий", above=False)
+    fl([git.right(), (2.85, git.y), (2.85, p.b)])
+    lab((git.r + 2.85) / 2, git.y, "коммит с ключом\nзадачи (SHOP-42)")
+    fl([(3.75, p.b), (3.75, ntf.y + 0.3), ntf.left(0.3)])
+    lab((3.75 + ntf.l) / 2, ntf.y + 0.3, "назначение,\nэскалация")
+    fl([(3.45, p.b), (3.45, ntf.y), ntf.left()])
+    lab((3.45 + ntf.l) / 2, ntf.y, "отчёт заказчику")
+    fl([(3.15, p.b), (3.15, ntf.y - 0.3), ntf.left(-0.3)])
+    lab((3.15 + ntf.l) / 2, ntf.y - 0.3, "новый\nкомментарий", above=False)
 
     # ---------------------------------------------------------------- легенда (строкой)
     # элементы расставляются по измеренной ширине текста и центрируются по рисунку
@@ -368,15 +370,15 @@ def dfd_diagram():
     external(ax, git, "Git-хостинг", S)
     external(ax, mem, "Участник проекта\n(исполнитель)", S)
 
-    names_p = ["Регистрация\nпользователей", "Ведение\nпроектов", "Управление\nсоставом\nпроекта",
-               "Управление\nзадачами\nи метками", "Обсуждение\nзадач"]
+    names_p = ["Регистрация\nпользователей", "Ведение\nпроектов\nи договоров", "Управление\nсоставом\nпроекта",
+               "Управление\nзадачами\nи спринтами", "Обсуждение\nзадач"]
     P = [Box(x, yP, pw, ph) for x in xs]
     for i, (b, n) in enumerate(zip(P, names_p), start=1):
         process(ax, b, str(i), n, S, band=0.45, sub=SUBS[i][0], color=SC(i), sub_size=11.5)
     p6 = Box(xs[2], 1.75, pw, 2.1)
     process(ax, p6, "6", "Формирование\nотчётов", S, band=0.45, sub=SUBS[6][0], color=SC(6), sub_size=11.5)
 
-    names_d = ["Пользователи", "Проекты", "Участники\nпроектов", "Задачи\nи метки", "Комментарии"]
+    names_d = ["Пользователи", "Проекты,\nдоговоры", "Участники\nпроектов", "Задачи,\nспринты", "Комментарии"]
     D = [Box(x, yD, sw, sh) for x in xs]
     for i, (b, n) in enumerate(zip(D, names_d), start=1):
         store(ax, b, f"D{i}", n, S, cell=0.65)
@@ -389,9 +391,9 @@ def dfd_diagram():
     flow(ax, [P[0].top(0.45), adm.bottom(0.45)], "подтвер-\nждение", at=(xs[0] + 1.2, 11.75), size=L, color=SC(1))
     flow(ax, [cat.bottom(-0.9), P[0].top(1.35)], "учётные\nзаписи", at=(6.05, 11.25), size=L, color=SC(1))
 
-    flow(ax, [lead.bottom(-1.1), P[1].top(0.75)], "данные\nпроекта", at=(10.0, 11.35), size=L, color=SC(2))
+    flow(ax, [lead.bottom(-1.1), P[1].top(0.75)], "проект,\nзаказчик,\nдоговор", at=(10.0, 11.35), size=L, color=SC(2))
     flow(ax, [lead.bottom(0.0), P[2].top(0.0)], "участник\nи роль", at=(xs[2], 11.35), size=L, color=SC(3))
-    flow(ax, [lead.bottom(1.1), P[3].top(-0.95)], "задача,\nисполни-\nтель, срок,\nметки", at=(15.05, 11.35), size=L, color=SC(4))
+    flow(ax, [lead.bottom(1.1), P[3].top(-0.95)], "задачи\n(в т. ч.\nCSV),\nспринты", at=(15.05, 11.35), size=L, color=SC(4))
 
     flow(ax, [git.bottom(), P[3].top(0.0)], "коммит\nSHOP-42", at=(xs[3], 11.85), size=L, color=SC(4))
     flow(ax, [mem.bottom(-1.2), P[3].top(1.25)], "новый\nстатус", at=(20.85, 11.55), size=L, color=SC(4))
@@ -400,7 +402,7 @@ def dfd_diagram():
     flow(ax, [P[4].top(1.2), mem.bottom(1.2)], "обсуж-\nдение", at=(xs[4] + 1.6, 11.35), size=L, color=SC(5))
 
     # запись в накопители
-    writes = ["новый\nпользователь", "проект", "участник,\nроль", "задача,\nстатус,\nметки", "коммен-\nтарий"]
+    writes = ["новый\nпользователь", "проект,\nдоговор", "участник,\nроль", "задача,\nспринт,\nистория", "коммен-\nтарий"]
     for i, (p, d, t) in enumerate(zip(P, D, writes), start=1):
         flow(ax, [p.bottom(), d.top()], t, at=(p.x, (p.b + d.t) / 2), size=L, color=SC(i))
     # чтение из соседнего накопителя
@@ -415,7 +417,8 @@ def dfd_diagram():
     flow(ax, [D[2].bottom(), p6.top()], "участники", at=(xs[2], 3.45), size=L, color=SC(6))
     flow(ax, [D[3].bottom(-0.8), p6.right(0.4)], "задачи", at=(15.85, 2.95), size=L, color=SC(6))
     flow(ax, [p6.bottom(-0.6), (p6.x - 0.6, 0.2), (0.25, 0.2), (0.25, 15.75), (lead.x, 15.75), lead.top()],
-         "отчёт о ходе проекта", at=(6.6, 15.75), size=L, color=SC(6))
+         "отчёты: риски, договоры", at=(6.6, 15.75), size=L, color=SC(6))
+    flow(ax, [p6.right(-0.45), ntf.left(-0.4)], "отчёт заказчику", at=(17.5, p6.y - 0.45), size=L, color=SC(6))
 
     # уведомления
     flow(ax, [P[3].right(-0.7), (19.95, P[3].y - 0.7), (19.95, ntf.y + 0.3), ntf.left(0.3)],
@@ -431,7 +434,8 @@ def dfd_diagram():
 # 3. Диаграмма декомпозиции функций
 # --------------------------------------------------------------------------
 def fdd_diagram():
-    fig, ax = canvas(24.5, 10.2, k=0.58)
+    fig, ax = canvas(24.5, 12.8, k=0.58)
+    ax.set_ylim(-2.6, 10.2)
     S = 15
 
     def rect(box, text, fc, size, bold=False):
@@ -446,16 +450,19 @@ def fdd_diagram():
         ("1. Управление\nпользователями",
          ["1.1. Регистрация", "1.2. Изменение\nданных", "1.3. Удаление"]),
         ("2. Управление\nпроектами",
-         ["2.1. Создание,\nкод проекта", "2.2. Назначение\nвладельца", "2.3. Статус\nи сроки", "2.4. Удаление"]),
+         ["2.1. Создание,\nкод проекта", "2.2. Назначение\nвладельца", "2.3. Статус\nи сроки", "2.4. Удаление",
+          "2.5. Заказчик\nпроекта", "2.6. Договор\nс заказчиком"]),
         ("3. Управление\nсоставом",
          ["3.1. Добавление\nучастника", "3.2. Назначение\nроли", "3.3. Исключение\nучастника"]),
         ("4. Управление\nзадачами",
          ["4.1. Создание\nи оценка", "4.2. Назначение\nисполнителя", "4.3. Статус\nи приоритет",
-          "4.4. Удаление", "4.5. Метки"]),
+          "4.4. Удаление", "4.5. Метки", "4.6. Спринты,\nпланирование", "4.7. Закрытие\nспринта",
+          "4.8. Пакетная\nзагрузка"]),
         ("5. Обсуждение\nзадач",
          ["5.1. Добавление\nкомментария", "5.2. Просмотр\nобсуждения", "5.3. Удаление\nкомментария"]),
         ("6. Формирование\nотчётов",
-         ["6.1. Запросы\nпо операциям", "6.2. Агрегаты\nи подзапросы", "6.3. Отчёт\nо рисках"]),
+         ["6.1. Запросы\nпо операциям", "6.2. Агрегаты\nи подзапросы", "6.3. Отчёт\nо рисках", "6.4. Отчёт\nзаказчику",
+          "6.5. Отчёт\nпо договорам", "6.6. Скорость\nи время цикла"]),
     ]
 
     xs = [2.15 + i * 4.04 for i in range(6)]
@@ -468,10 +475,10 @@ def fdd_diagram():
         ax.plot([x, x], [bus_y, f.t], color=LINE, lw=1.4)
         rect(f, name, FILL_PROC, S, True)
         spine = f.l + 0.22
-        ys = [6.35 - k * 1.35 for k in range(len(subs))]
+        ys = [6.4 - k * 1.2 for k in range(len(subs))]
         ax.plot([spine, spine], [f.b, ys[-1]], color=LINE, lw=1.2)
         for y, s in zip(ys, subs):
-            sb = Box(spine + 0.25 + 3.38 / 2, y, 3.38, 1.05)
+            sb = Box(spine + 0.25 + 3.38 / 2, y, 3.38, 0.98)
             ax.plot([spine, sb.l], [y, y], color=LINE, lw=1.2)
             rect(sb, s, "white", 14)
 
@@ -482,30 +489,38 @@ def fdd_diagram():
 # 4. ER-диаграмма в нотации Чена
 # --------------------------------------------------------------------------
 def chen_diagram():
+    """ER-диаграмма в нотации Чена: 9 сущностей (одна слабая) и 12 связей."""
     K = 0.5
-    DY = 2.4
-    fig, ax = canvas(23.5, 18.9, k=K)
+    fig, ax = canvas(30.5, 20.6, k=K)
     renderer = fig.canvas.get_renderer()
     AS = 12.5       # кегль атрибутов
 
-    def entity(box, name, table):
+    def entity(box, name, table, weak=False):
         ax.add_patch(Rectangle((box.l, box.b), box.w, box.h, fc=FILL_ENT, ec=LINE, lw=1.8, zorder=4))
-        ax.text(box.x, box.y + 0.17, name, ha="center", va="center", fontsize=14, weight="bold", zorder=6)
+        if weak:
+            ax.add_patch(Rectangle((box.l + 0.12, box.b + 0.12), box.w - 0.24, box.h - 0.24,
+                                   fc="none", ec=LINE, lw=1.2, zorder=5))
+        ax.text(box.x, box.y + 0.17, name, ha="center", va="center", fontsize=13.5, weight="bold", zorder=6)
         ax.text(box.x, box.y - 0.3, f"({table})", ha="center", va="center", fontsize=12, color="#333333", zorder=6)
 
-    def attr(x, y, text, ent, key=False):
+    def attr(x, y, text, ent, key=False, partial=False):
         ax.plot([x, ent.x], [y, ent.y], color=LINE, lw=1.0, zorder=1)
         w = max(1.7, 0.095 * len(text) / K + 0.55)
         ax.add_patch(Ellipse((x, y), w, 0.78, fc="white", ec=LINE, lw=1.2, zorder=4))
         t = ax.text(x, y, text, ha="center", va="center", fontsize=AS, zorder=6)
-        if key:
+        if key or partial:
             bb = t.get_window_extent(renderer=renderer).transformed(ax.transData.inverted())
-            ax.plot([bb.x0, bb.x1], [bb.y0 + 0.01, bb.y0 + 0.01], color=LINE, lw=1.1, zorder=6)
+            ax.plot([bb.x0, bb.x1], [bb.y0 + 0.01, bb.y0 + 0.01], color=LINE, lw=1.1, zorder=6,
+                    linestyle=(0, (3, 2)) if partial else "-")
 
-    def rel(x, y, text, w=2.9, h=1.45):
+    def rel(x, y, text, w=2.9, h=1.45, ident=False):
         ax.add_patch(Polygon([(x - w / 2, y), (x, y + h / 2), (x + w / 2, y), (x, y - h / 2)],
                              closed=True, fc=FILL_PROC, ec=LINE, lw=1.6, zorder=4))
-        ax.text(x, y, text, ha="center", va="center", fontsize=12.5, weight="bold", zorder=6)
+        if ident:
+            d = 0.22
+            ax.add_patch(Polygon([(x - w / 2 + d * 1.6, y), (x, y + h / 2 - d), (x + w / 2 - d * 1.6, y),
+                                  (x, y - h / 2 + d)], closed=True, fc="none", ec=LINE, lw=1.1, zorder=5))
+        ax.text(x, y, text, ha="center", va="center", fontsize=11.5, weight="bold", zorder=6)
         return (x, y)
 
     def link(a, b, total=False):
@@ -516,93 +531,133 @@ def chen_diagram():
         dx, dy = x2 - x1, y2 - y1
         n = (dx ** 2 + dy ** 2) ** 0.5
         ox, oy = -dy / n * 0.06, dx / n * 0.06
-        for s in (1, -1):
-            ax.plot([x1 + s * ox, x2 + s * ox], [y1 + s * oy, y2 + s * oy], color=LINE, lw=1.3, zorder=2)
+        for sgn in (1, -1):
+            ax.plot([x1 + sgn * ox, x2 + sgn * ox], [y1 + sgn * oy, y2 + sgn * oy], color=LINE, lw=1.3, zorder=2)
 
     def card(x, y, text):
-        ax.text(x, y, text, ha="center", va="center", fontsize=16, weight="bold", color="#b03030", zorder=7)
+        ax.text(x, y, text, ha="center", va="center", fontsize=15, weight="bold", color="#b03030", zorder=7)
 
-    U = Box(4.3, 8.4 + DY, 4.3, 1.2)
-    P = Box(15.6, 12.3 + DY, 3.3, 1.2)
-    T = Box(15.6, 5.2 + DY, 3.3, 1.2)
-    C = Box(7.6, 2.3 + DY, 4.0, 1.2)
-    M = Box(15.6, 1.35, 3.3, 1.2)
-    entity(U, "ПОЛЬЗОВАТЕЛЬ", "users")
+    def conn(ent_pt, rel_pt, text, total=False, side=1):
+        """Связь сущность — ромб и кратность у сущности (сдвиг вдоль линии и вбок)."""
+        link(ent_pt, rel_pt, total)
+        (x1, y1), (x2, y2) = ent_pt, rel_pt
+        dx, dy = x2 - x1, y2 - y1
+        n = (dx ** 2 + dy ** 2) ** 0.5
+        ux, uy = dx / n, dy / n
+        card(x1 + ux * 0.55 - uy * 0.32 * side, y1 + uy * 0.55 + ux * 0.32 * side, text)
+
+    Z = Box(4.0, 17.6, 4.0, 1.2)
+    P = Box(15.2, 14.6, 3.6, 1.2)
+    D = Box(25.8, 17.4, 3.6, 1.2)
+    S = Box(25.8, 10.6, 3.6, 1.2)
+    U = Box(4.6, 9.4, 4.4, 1.2)
+    T = Box(15.2, 7.8, 3.6, 1.2)
+    M = Box(25.8, 3.6, 3.6, 1.2)
+    C = Box(8.6, 4.2, 4.0, 1.2)
+    H = Box(9.9, 1.0, 5.6, 1.2)
+    entity(Z, "ЗАКАЗЧИК", "customers")
     entity(P, "ПРОЕКТ", "projects")
+    entity(D, "ДОГОВОР", "contracts")
+    entity(S, "СПРИНТ", "sprints")
+    entity(U, "ПОЛЬЗОВАТЕЛЬ", "users")
     entity(T, "ЗАДАЧА", "tasks")
-    entity(C, "КОММЕНТАРИЙ", "comments")
     entity(M, "МЕТКА", "marks")
+    entity(C, "КОММЕНТАРИЙ", "comments")
+    entity(H, "ИЗМЕНЕНИЕ СТАТУСА", "task_status_history", weak=True)
 
-    own = rel(9.9, 13.3 + DY, "ВЛАДЕЕТ")
-    link(U.top(0.6), own)
-    link(own, P.left(0.25), total=True)
-    card(5.55, 9.6 + DY, "1")
-    card(13.55, 12.95 + DY, "N")
+    # --- проект и его окружение
+    r = rel(9.0, 17.6, "ЗАКАЗЫВАЕТ", w=3.3)
+    conn(Z.right(), (r[0] - 1.65, r[1]), "1")
+    conn(P.top(-1.4), (r[0] + 1.65, r[1]), "N", side=-1)
 
-    part = rel(9.9, 10.55 + DY, "УЧАСТВУЕТ", w=3.3)
-    link(U.right(0.3), part)
-    link(part, P.left(-0.25))
-    card(6.75, 9.1 + DY, "M")
-    card(13.55, 11.65 + DY, "N")
-    attr(8.55, 9.0 + DY, "role", Box(*part, 0, 0))
-    attr(11.3, 9.0 + DY, "joined_at", Box(*part, 0, 0))
+    r = rel(9.9, 14.2, "ВЛАДЕЕТ")
+    conn(U.top(1.2), (r[0] - 0.35, r[1] - 0.6), "1", side=-1)
+    conn(P.left(0.15), (r[0] + 1.45, r[1]), "N", total=True, side=-1)
 
-    cont = rel(15.6, 8.75 + DY, "СОДЕРЖИТ", w=3.1)
-    link(P.bottom(), cont)
-    link(cont, T.top(), total=True)
-    card(16.0, 11.35 + DY, "1")
-    card(16.0, 6.15 + DY, "N")
+    r = rel(9.9, 11.7, "УЧАСТВУЕТ", w=3.3)
+    conn(U.right(0.35), (r[0] - 1.65, r[1]), "M")
+    conn(P.bottom(-1.3), (r[0] + 1.65, r[1]), "N")
+    attr(7.6, 12.85, "role", Box(*r, 0, 0))
+    attr(9.9, 10.3, "joined_at", Box(*r, 0, 0))
 
-    execs = rel(10.0, 6.4 + DY, "ИСПОЛНЯЕТ", w=3.3)
-    link(U.right(-0.3), execs)
-    link(execs, T.left(0.2))
-    card(6.75, 7.6 + DY, "1")
-    card(13.55, 5.8 + DY, "N")
+    r = rel(20.9, 16.9, "ОФОРМЛЕН", w=3.0)
+    conn(P.right(0.3), (r[0] - 1.5, r[1]), "1")
+    conn(D.left(-0.2), (r[0] + 1.5, r[1]), "1", total=True, side=-1)
 
-    has = rel(12.0, 2.3 + DY, "ОТНОСИТСЯ\nК", w=3.0, h=1.6)
-    link(T.bottom(-0.6), has)
-    link(has, C.right(), total=True)
-    card(14.3, 4.5 + DY, "1")
-    card(10.05, 2.75 + DY, "N")
+    r = rel(20.9, 12.9, "ДЕЛИТСЯ\nНА", w=2.9, h=1.6)
+    conn(P.right(-0.3), (r[0] - 1.45, r[1]), "1", side=-1)
+    conn(S.top(-0.9), (r[0] + 1.45, r[1]), "N", total=True, side=-1)
 
-    writes = rel(4.3, 4.85 + DY, "ПИШЕТ")
-    link(U.bottom(), writes)
-    link(writes, C.left(0.2), total=True)
-    card(4.65, 7.5 + DY, "1")
-    card(5.3, 3.1 + DY, "N")
+    r = rel(15.2, 11.2, "СОДЕРЖИТ", w=3.1)
+    conn(P.bottom(), (r[0], r[1] + 0.72), "1")
+    conn(T.top(), (r[0], r[1] - 0.72), "N", total=True, side=-1)
 
-    tag = rel(15.6, 3.85, "ПОМЕЧЕНА", w=3.2)
-    link(T.bottom(), tag)
-    link(tag, M.top())
-    card(16.0, 6.0, "M")
-    card(16.0, 2.25, "N")
-    attr(12.75, 3.05, "date", Box(*tag, 0, 0))
+    # --- задача
+    r = rel(20.9, 9.4, "ВКЛЮЧАЕТ", w=3.1)
+    conn(S.left(-0.2), (r[0] + 1.55, r[1]), "1", side=-1)
+    conn(T.right(0.25), (r[0] - 1.55, r[1]), "N")
 
-    for (x, y, t, k) in [(1.2, 10.85, "user_id", True), (1.15, 9.4, "full_name", False),
-                         (1.0, 7.75, "email", False), (1.25, 6.2, "created_at", False)]:
-        attr(x, y + DY, t, U, k)
+    r = rel(9.9, 7.6, "ИСПОЛНЯЕТ", w=3.2)
+    conn(U.right(-0.35), (r[0] - 1.6, r[1]), "1", side=-1)
+    conn(T.left(0.0), (r[0] + 1.6, r[1]), "N")
 
-    for (x, y, t, k) in [(12.4, 14.85, "project_id", True), (14.55, 15.6, "name", False),
-                         (16.75, 15.6, "code", False), (19.1, 15.15, "description", False),
-                         (20.6, 13.75, "status", False), (21.0, 12.35, "start_date", False),
-                         (20.6, 10.95, "end_date", False)]:
-        attr(x, y + DY, t, P, k)
+    r = rel(21.6, 4.9, "ПОМЕЧЕНА", w=3.1)
+    conn(T.right(-0.5), (r[0] - 1.55, r[1]), "M", side=-1)
+    conn(M.left(-0.2), (r[0] + 1.55, r[1]), "N", side=1)
+    attr(21.6, 3.3, "date", Box(*r, 0, 0))
 
-    for (x, y, t, k) in [(19.15, 8.75, "task_id", True), (20.75, 7.85, "title", False),
-                         (21.45, 6.9, "description", False), (21.65, 5.95, "status", False),
-                         (21.65, 5.0, "priority", False), (21.45, 4.05, "created_at", False),
-                         (21.0, 3.1, "due_date", False), (20.4, 2.15, "estimate_hours", False),
-                         (19.6, 1.2, "completed_at", False)]:
-        attr(x, y + DY, t, T, k)
+    r = rel(5.6, 6.0, "ПИШЕТ")
+    conn(U.bottom(0.9), (r[0], r[1] + 0.72), "1")
+    conn(C.left(0.2), (r[0] + 0.5, r[1] - 0.45), "N", total=True)
 
-    for (x, y, t, k) in [(4.6, 0.85, "comment_id", True), (7.6, 0.6, "body", False),
-                         (10.6, 0.85, "created_at", False)]:
-        attr(x, y + DY, t, C, k)
+    r = rel(12.6, 5.0, "ОТНОСИТСЯ\nК", w=3.0, h=1.6)
+    conn(T.bottom(-1.2), (r[0], r[1] + 0.8), "1", side=1)
+    conn(C.right(0.25), (r[0] - 1.5, r[1]), "N", total=True)
 
-    for (x, y, t, k) in [(12.35, 0.55, "mark_id", True), (12.6, 1.95, "name", False),
-                         (19.0, 0.55, "color", False)]:
+    r = rel(2.6, 4.2, "ИЗМЕНИЛ", w=2.8)
+    conn(U.bottom(-1.6), (r[0], r[1] + 0.72), "1", side=-1)
+    conn(H.left(0.2), (r[0], r[1] - 0.72), "N")
+
+    r = rel(15.2, 3.4, "ИМЕЕТ\nИСТОРИЮ", w=3.2, h=1.7, ident=True)
+    conn(T.bottom(), (r[0], r[1] + 0.85), "1", side=-1)
+    conn(H.right(0.1), (r[0] - 1.6, r[1]), "N", total=True, side=-1)
+
+    # --- атрибуты
+    for (x, y, t, k) in [(1.3, 19.4, "customer_id", True), (4.2, 19.7, "name", False),
+                         (7.4, 19.4, "contact_name", False), (1.4, 15.9, "email", False)]:
+        attr(x, y, t, Z, k)
+    for (x, y, t, k) in [(13.1, 17.5, "project_id", True), (14.8, 18.6, "name", False),
+                         (16.8, 18.6, "code", False), (18.5, 17.75, "description", False),
+                         (11.9, 15.75, "status", False), (18.1, 12.55, "start_date", False),
+                         (18.4, 11.45, "end_date", False)]:
+        attr(x, y, t, P, k)
+    for (x, y, t, k) in [(23.5, 19.5, "number", True), (26.6, 19.6, "signed_on", False),
+                         (29.0, 18.4, "amount", False), (28.6, 16.0, "budget_hours", False)]:
+        attr(x, y, t, D, k)
+    for (x, y, t, k) in [(28.4, 12.7, "sprint_id", True), (29.6, 11.8, "number", False),
+                         (29.7, 10.8, "goal", False), (29.5, 9.8, "start_date", False),
+                         (29.0, 8.75, "end_date", False), (25.9, 8.35, "capacity_hours", False),
+                         (23.1, 8.2, "status", False)]:
+        attr(x, y, t, S, k)
+    for (x, y, t, k) in [(1.3, 11.5, "user_id", True), (1.1, 10.4, "full_name", False),
+                         (1.1, 8.3, "email", False), (1.3, 7.2, "created_at", False)]:
+        attr(x, y, t, U, k)
+    for (x, y, t, k) in [(12.4, 9.45, "task_id", True), (13.6, 10.35, "title", False),
+                         (17.4, 10.25, "status", False), (18.4, 9.05, "priority", False),
+                         (11.5, 8.5, "description", False), (19.6, 7.75, "created_at", False),
+                         (20.5, 6.7, "due_date", False), (18.6, 4.15, "estimate_hours", False),
+                         (18.0, 2.75, "completed_at", False)]:
+        attr(x, y, t, T, k)
+    for (x, y, t, k) in [(5.9, 2.75, "comment_id", True), (8.6, 2.75, "body", False),
+                         (11.2, 2.85, "created_at", False)]:
+        attr(x, y, t, C, k)
+    for (x, y, t, k, pk) in [(4.9, -0.15, "changed_at", False, True), (14.5, -0.15, "new_status", False, False),
+                             (9.9, -0.5, "old_status", False, False)]:
+        attr(x, y, t, H, k, partial=pk)
+    for (x, y, t, k) in [(29.0, 4.8, "mark_id", True), (29.3, 3.6, "name", False), (28.8, 2.4, "color", False)]:
         attr(x, y, t, M, k)
 
+    ax.set_ylim(-1.0, 20.6)
     save(fig, "chen")
 
 
@@ -707,8 +762,8 @@ def bpmn_diagram():
     s1 = task(c[1], yS, "4.1 Записать\nзадачу [todo]", "service")
     g1 = gateway(c[2], yR, "Задача\nактуальна?")
     s7 = task(c[2], yS, "4.4 Удалить\nзадачу", "service", w=1.95)
-    r2 = task(c[3], yR, "Оценить,\nназначить\nисполнителя,\nсрок, метки", h=1.55)
-    s2 = task(c[3], yS, "4.2 Записать\nназначение,\nуведомить", "service")
+    r2 = task(c[3], yR, "Оценить,\nназначить,\nвключить\nв спринт", h=1.55)
+    s2 = task(c[3], yS, "4.2, 4.6\nЗаписать, про-\nверить ёмкость", "service", w=2.25, h=1.45)
     e1 = task(c[4], yE, "Взять\nв работу")
     s3 = task(c[4], yS, "4.3 Статус\nin_progress", "service")
     e2 = task(c[5], yE, "Выполнить\nработу, обсуж-\nдать, коммиты\nSHOP-42", w=2.4, h=1.55)
@@ -748,6 +803,13 @@ def bpmn_diagram():
     tm = event(e2.x - 0.55, e2.t, "inter", None, r=0.28)
     ax.text(tm.x - 0.38, e2.t + 0.22, "срок прошёл", ha="right", va="center", fontsize=S - 1.5, style="italic")
     seq([tm.top(), (tm.x, r3.b)])
+
+    # граничное событие ошибки: ёмкость спринта превышена (PM004) — вернуть руководителю
+    er = event(s2.r - 0.35, s2.t, "inter", None, r=0.26)
+    ax.plot([er.x - 0.1, er.x - 0.02, er.x + 0.03, er.x + 0.12], [er.y - 0.13, er.y + 0.08, er.y - 0.04, er.y + 0.14],
+            color=LINE, lw=1.3, zorder=7)
+    ax.text(er.x - 0.3, er.t + 0.75, "ёмкость\nпревышена", ha="right", va="center", fontsize=S - 1.5, style="italic")
+    seq([er.top(), (er.x, r2.b)])
     seq([r3.right(), en3.left()])
 
     # хранилища данных и электронные документы
@@ -768,10 +830,11 @@ def bpmn_diagram():
 # 6. Логическая модель данных
 # --------------------------------------------------------------------------
 def logical_diagram():
-    W, H = 17.3, 12.0
-    fig, ax = canvas(W, H, k=0.7)
+    """Логическая модель: 11 таблиц, внешние ключи с правилами ON DELETE."""
+    W, H = 23.4, 14.2
+    fig, ax = canvas(W, H, k=0.62)
     S = 12
-    RH, HH, TW = 0.42, 0.55, 3.3
+    RH, HH, TW = 0.42, 0.55, 3.4
 
     T = {}
 
@@ -779,32 +842,45 @@ def logical_diagram():
         h = HH + RH * len(rows)
         ax.add_patch(Rectangle((x, top - h), TW, h, fc="white", ec=LINE, lw=1.6, zorder=3))
         ax.add_patch(Rectangle((x, top - HH), TW, HH, fc=FILL_ENT, ec=LINE, lw=1.6, zorder=3))
-        ax.text(x + TW / 2, top - HH / 2, name, ha="center", va="center", fontsize=S + 1, weight="bold", zorder=5)
-        ax.plot([x + 0.85, x + 0.85], [top - h, top - HH], color=LINE, lw=0.8, zorder=4)
+        ax.text(x + TW / 2, top - HH / 2, name, ha="center", va="center", fontsize=S + 0.5, weight="bold", zorder=5)
+        ax.plot([x + 0.9, x + 0.9], [top - h, top - HH], color=LINE, lw=0.8, zorder=4)
+        rowy = {}
         for i, (k, a) in enumerate(rows):
             y = top - HH - RH * (i + 0.5)
-            ax.text(x + 0.42, y, k, ha="center", va="center", fontsize=S - 2, weight="bold", zorder=5,
+            rowy[a] = y
+            ax.text(x + 0.45, y, k, ha="center", va="center", fontsize=S - 2.5, weight="bold", zorder=5,
                     color="#8a1c1c" if "PK" in k else "#1c3f8a")
-            ax.text(x + 1.0, y, a, ha="left", va="center", fontsize=S, zorder=5,
+            ax.text(x + 1.02, y, a, ha="left", va="center", fontsize=S - 0.5, zorder=5,
                     weight="bold" if "PK" in k else "normal")
             if i:
                 ax.plot([x, x + TW], [y + RH / 2, y + RH / 2], color="#bbbbbb", lw=0.5, zorder=4)
-        T[name] = Box(x + TW / 2, top - h / 2, TW, h)
+        bx = Box(x + TW / 2, top - h / 2, TW, h)
+        bx.row = rowy
+        T[name] = bx
 
-    c1, c2, c3, c4 = 0.3, 4.7, 9.1, 13.7
-    top1, top2 = 11.6, 6.6
+    c1, c2, c3, c4, c5 = 0.3, 5.0, 9.7, 14.4, 19.1
+    top1, top2 = 13.6, 7.15
     table("users", c1, top1, [("PK", "user_id"), ("", "full_name"), ("U", "email"), ("", "created_at")])
     table("project_members", c2, top1, [("PK, FK", "project_id"), ("PK, FK", "user_id"),
                                         ("", "role"), ("", "joined_at")])
     table("projects", c3, top1, [("PK", "project_id"), ("U", "name"), ("U", "code"), ("", "description"),
-                                 ("FK", "owner_id"), ("", "status"), ("", "start_date"), ("", "end_date")])
-    table("marks", c4, top1, [("PK", "mark_id"), ("U", "name"), ("", "color")])
+                                 ("FK", "owner_id"), ("FK", "customer_id"), ("", "status"), ("", "start_date"),
+                                 ("", "end_date")])
+    table("customers", c4, top1, [("PK", "customer_id"), ("U", "name"), ("", "contact_name"), ("", "email")])
+    table("contracts", c4, 10.85, [("PK, FK", "project_id"), ("FK", "customer_id"), ("U", "number"),
+                                   ("", "signed_on"), ("", "amount"), ("", "budget_hours")])
     table("comments", c1, top2, [("PK", "comment_id"), ("FK", "task_id"), ("FK", "author_id"),
                                  ("", "body"), ("", "created_at")])
+    table("task_status_history", c2, top2, [("PK", "history_id"), ("FK", "task_id"), ("", "old_status"),
+                                            ("", "new_status"), ("", "changed_at"), ("FK", "changed_by")])
     table("tasks", c3, top2, [("PK", "task_id"), ("FK, U", "project_id"), ("FK", "assignee_id"),
-                              ("U", "title"), ("", "description"), ("", "status"), ("", "priority"),
-                              ("", "created_at"), ("", "due_date"), ("", "estimate_hours"), ("", "completed_at")])
-    table("marks_tasks", c4, top2, [("PK, FK", "mark_id"), ("PK, FK", "task_id"), ("", "date")])
+                              ("FK", "sprint_id"), ("U", "title"), ("", "description"), ("", "status"),
+                              ("", "priority"), ("", "created_at"), ("", "due_date"), ("", "estimate_hours"),
+                              ("", "completed_at")])
+    table("sprints", c4, top2, [("PK", "sprint_id"), ("FK, U", "project_id"), ("U", "number"), ("", "goal"),
+                                ("", "start_date"), ("", "end_date"), ("", "capacity_hours"), ("", "status")])
+    table("marks", c5, 6.2, [("PK", "mark_id"), ("U", "name"), ("", "color")])
+    table("marks_tasks", c5, 3.55, [("PK, FK", "mark_id"), ("PK, FK", "task_id"), ("", "date")])
 
     def card(x, y, t):
         ax.text(x, y, t, fontsize=S, weight="bold", color="#b03030", ha="center", va="center", zorder=6)
@@ -813,50 +889,79 @@ def logical_diagram():
         ax.text(x, y, t, fontsize=S - 2.5, color=GREY, ha="center", va="center", zorder=6, style="italic",
                 bbox=dict(boxstyle="round,pad=0.1", fc="white", ec="none"))
 
-    def rel(pts, one, many, rule_xy, text):
+    def rel(pts, one, many, rule_xy, text, one_text="1", many_text="N"):
         polyline(ax, pts, lw=1.3)
-        card(*one, "1")
-        card(*many, "N")
+        card(*one, one_text)
+        card(*many, many_text)
         rule(*rule_xy, text)
 
-    U, PM, P, MK = T["users"], T["project_members"], T["projects"], T["marks"]
-    C, TK, MT = T["comments"], T["tasks"], T["marks_tasks"]
+    U, PM, P, CU, CT = T["users"], T["project_members"], T["projects"], T["customers"], T["contracts"]
+    C, HS, TK, SP, MK, MT = T["comments"], T["task_status_history"], T["tasks"], T["sprints"], T["marks"], T["marks_tasks"]
 
-    y = PM.y + 0.25
-    rel([(PM.l, y), (U.r, y)], (U.r + 0.18, y + 0.22), (PM.l - 0.2, y + 0.22), ((U.r + PM.l) / 2, y - 0.3), "CASCADE")
-    rel([(PM.r, y), (P.l, y)], (P.l - 0.18, y + 0.22), (PM.r + 0.2, y + 0.22), ((PM.r + P.l) / 2, y - 0.3), "CASCADE")
+    # project_members → users, projects
+    y = PM.row["user_id"]
+    rel([(PM.l, y), (U.r, y)], (U.r + 0.2, y + 0.22), (PM.l - 0.2, y + 0.22), ((U.r + PM.l) / 2, y - 0.3), "CASCADE")
+    y = PM.row["project_id"]
+    rel([(PM.r, y), (P.l, y)], (P.l - 0.2, y + 0.22), (PM.r + 0.2, y + 0.22), ((PM.r + P.l) / 2, y - 0.3), "CASCADE")
     # projects.owner_id → users: поверх таблиц
     yt = top1 + 0.3
     rel([(P.x + 0.9, P.t), (P.x + 0.9, yt), (U.x, yt), (U.x, U.t)], (U.x + 0.2, U.t + 0.12),
-        (P.x + 1.1, P.t + 0.12), (8.4, yt), "RESTRICT")
+        (P.x + 1.1, P.t + 0.12), (7.0, yt), "RESTRICT")
+    # projects.customer_id → customers
+    y = P.row["customer_id"]
+    rel([(P.r, y), (13.75, y), (13.75, CU.y), (CU.l, CU.y)], (CU.l - 0.2, CU.y + 0.22),
+        (P.r + 0.2, y + 0.22), (13.75, (y + CU.y) / 2), "RESTRICT")
+    # contracts (project_id, customer_id) → projects: 1 : 1
+    y = P.row["start_date"]
+    rel([(CT.l, y), (P.r, y)], (P.r + 0.2, y + 0.22), (CT.l - 0.2, y + 0.22), ((P.r + CT.l) / 2 + 0.25, y - 0.22),
+        "RESTRICT", many_text="1")
+    # sprints.project_id → projects
+    y = P.row["end_date"]
+    ys = SP.row["project_id"]
+    rel([(SP.l + 0.45, SP.t), (SP.l + 0.45, 7.47), (13.45, 7.47), (13.45, y), (P.r, y)],
+        (P.r + 0.2, y - 0.24), (SP.l + 0.65, SP.t + 0.2), (13.45, 8.0), "CASCADE")
     # tasks.project_id → projects
     rel([(TK.x, TK.t), (TK.x, P.b)], (TK.x + 0.2, P.b - 0.2), (TK.x + 0.2, TK.t + 0.2),
         (TK.x, (TK.t + P.b) / 2), "CASCADE")
-    # tasks.assignee_id → users
-    ya = TK.t - 0.75
-    rel([(TK.l, ya), (U.r + 0.55, ya), (U.r + 0.55, U.b + 0.35), (U.r, U.b + 0.35)],
-        (U.r + 0.18, U.b + 0.57), (TK.l - 0.2, ya + 0.22), (6.8, ya), "SET NULL")
-    # comments.author_id → users
+    # tasks (sprint_id, project_id) → sprints
+    y = TK.row["sprint_id"]
+    rel([(TK.r, y), (SP.l, y)], (SP.l - 0.2, y + 0.22), (TK.r + 0.2, y + 0.22), ((TK.r + SP.l) / 2, y - 0.3),
+        "SET NULL")
+    # tasks (project_id, assignee_id) → project_members
+    y = TK.row["assignee_id"]
+    rel([(TK.l + 0.5, TK.t), (TK.l + 0.5, 8.9), (7.6, 8.9), (7.6, PM.b)], (7.8, PM.b - 0.2), (TK.l + 0.7, TK.t + 0.2),
+        (8.65, 8.9), "SET NULL")
+    # comments → users, tasks
     rel([(U.x, C.t), (U.x, U.b)], (U.x + 0.2, U.b - 0.2), (U.x + 0.2, C.t + 0.2), (U.x, (C.t + U.b) / 2), "RESTRICT")
-    # comments.task_id → tasks
-    yc = C.y - 0.2
-    rel([(C.r, yc), (TK.l, yc)], (TK.l - 0.18, yc + 0.22), (C.r + 0.2, yc + 0.22), (6.8, yc), "CASCADE")
-    # marks_tasks.task_id → tasks, marks_tasks.mark_id → marks
-    ym = MT.y
-    rel([(MT.l, ym), (TK.r, ym)], (TK.r + 0.18, ym + 0.22), (MT.l - 0.2, ym + 0.22), ((TK.r + MT.l) / 2, ym - 0.3), "CASCADE")
+    yc = 3.75
+    rel([(C.r, C.row["task_id"]), (4.15, C.row["task_id"]), (4.15, yc), (TK.l, yc)], (TK.l - 0.2, yc + 0.22),
+        (C.r + 0.2, C.row["task_id"] + 0.22), (6.7, yc), "CASCADE")
+    # history → tasks, users
+    y = HS.row["task_id"]
+    rel([(HS.r, y), (TK.l, y)], (TK.l - 0.2, y + 0.22), (HS.r + 0.2, y + 0.22), ((HS.r + TK.l) / 2, y - 0.3), "CASCADE")
+    y = HS.row["changed_by"]
+    rel([(HS.l, y), (4.65, y), (4.65, U.row["created_at"]), (U.r, U.row["created_at"])],
+        (U.r + 0.2, U.row["created_at"] - 0.25), (HS.l - 0.2, y + 0.22), (4.65, 9.3), "SET NULL")
+    # marks_tasks → tasks, marks
+    y = MT.row["task_id"]
+    rel([(MT.l, y), (TK.r, y)], (TK.r + 0.2, y + 0.22), (MT.l - 0.2, y + 0.22), (16.1, y - 0.3), "CASCADE")
     rel([(MT.x, MT.t), (MT.x, MK.b)], (MT.x + 0.2, MK.b - 0.2), (MT.x + 0.2, MT.t + 0.2),
         (MT.x, (MT.t + MK.b) / 2), "RESTRICT")
 
-    lx, ly, lw_ = c2 - 0.1, 3.3, 4.2
-    ax.add_patch(Rectangle((lx, ly - 2.85), lw_, 2.85, fc="white", ec="#888888", lw=1, zorder=1))
+    lx, ly, lw_ = c5, top1, 4.0
+    ax.add_patch(Rectangle((lx, ly - 4.1), lw_, 4.1, fc="white", ec="#888888", lw=1, zorder=1))
     items = [("PK", "первичный ключ", "#8a1c1c"), ("FK", "внешний ключ", "#1c3f8a"),
              ("U", "входит в UNIQUE", "#1c3f8a")]
     for i, (k, t, col) in enumerate(items):
-        ax.text(lx + 0.4, ly - 0.35 - i * 0.48, k, fontsize=S - 2, weight="bold", color=col, ha="center", va="center")
-        ax.text(lx + 0.85, ly - 0.35 - i * 0.48, t, fontsize=S - 1, va="center")
+        ax.text(lx + 0.4, ly - 0.4 - i * 0.5, k, fontsize=S - 2, weight="bold", color=col, ha="center", va="center")
+        ax.text(lx + 0.85, ly - 0.4 - i * 0.5, t, fontsize=S - 1, va="center")
     ax.text(lx + 0.2, ly - 1.95, "1, N — кардинальность", fontsize=S - 1, va="center")
     ax.text(lx + 0.2, ly - 2.45, "курсив — правило ON DELETE", fontsize=S - 1, va="center", style="italic")
+    ax.text(lx + 0.2, ly - 3.05, "составные FK: tasks → sprints,", fontsize=S - 1.5, va="center")
+    ax.text(lx + 0.2, ly - 3.5, "tasks → project_members,", fontsize=S - 1.5, va="center")
+    ax.text(lx + 0.2, ly - 3.95, "contracts → projects", fontsize=S - 1.5, va="center")
 
+    ax.set_ylim(1.3, H)
     save(fig, "logical")
 
 
@@ -902,7 +1007,7 @@ def arch_diagram():
     for t, x in comps:
         box(Box(x, 5.85, 2.75, 1.45), t, size=S - 1.5)
     db = Box(6.55, 3.45, 11.4, 1.25)
-    box(db, "База данных project_db: 7 таблиц, 33 ограничения, индексы", fc=FILL_STORE, size=S - 1)
+    box(db, "База данных project_mgmt: 11 таблиц, 59 ограничений, 7 триггеров, индексы", fc=FILL_STORE, size=S - 1)
     for t, x in comps:
         arrow(ax, [(x, 5.12), (x, db.t)], lw=1.1)
     for x in (2.4, 6.4, 10.55):
@@ -1026,15 +1131,15 @@ def algo_diagram():
         ax.plot([a[0], b[0]], [a[1], b[1]], color=LINE, lw=1.4, zorder=2)
 
     b0 = terminator(15.0, "Начало")
-    b1 = proc(13.6, "Соединить tasks, projects, users, comments:\nактивные проекты, задача не done,\n"
-                    "исполнитель назначен", h=1.5)
-    b2 = loop(11.95, "Цикл по парам\n«задача t — комментарий c»", top=True)
-    b3 = proc(10.3, "Подзапрос: последняя дата\nкомментария задачи t\nmax(c2.created_at), c2.task_id = t.task_id",
+    b1 = proc(13.6, "Соединить project_members, projects,\nusers: участники действующих\n"
+                    "проектов", h=1.5)
+    b2 = loop(11.95, "Цикл по участникам\n«проект p — сотрудник u»", top=True)
+    b3 = proc(10.3, "Подзапросы 1, 2: число и часы\nнезавершённых задач u в p\n(tasks: project_id, assignee_id)",
               h=1.55)
-    b4 = decision(8.15, "c.created_at = последняя\nи автор c ≠\nисполнитель t?")
-    b5 = proc(5.95, "Добавить строку: проект, задача,\nисполнитель, автор, текст,\nдней без ответа", h=1.5)
+    b4 = decision(8.15, "Есть комментарии\nu в задачах p?")
+    b5 = proc(5.95, "Подзапрос 3: последний\nкомментарий u в задачах p\n(comments: author_id)", h=1.5)
     b6 = loop(4.3, "Конец цикла", top=False)
-    b7 = proc(2.75, "Упорядочить по числу\nдней без ответа (по убыванию)", h=1.15)
+    b7 = proc(2.75, "Упорядочить по проекту\nи часам (по убыванию)", h=1.15)
     b8 = terminator(1.35, "Конец")
 
     for a, b in [(b0, b1), (b1, b2), (b2, b3), (b3, b4), (b4, b5), (b5, b6), (b6, b7), (b7, b8)]:
@@ -1069,6 +1174,8 @@ def env_diagram():
     mem = Box(1.9, 3.6, 3.4, 1.3)
     external(ax, lead, "Руководитель\nпроекта", S)
     external(ax, mem, "Участник\nпроекта", S)
+    cust = Box(1.9, 7.45, 3.4, 1.1)
+    external(ax, cust, "Заказчик\nпроекта", S)
     cat = Box(7.55, 11.0, 4.3, 1.25)
     ntf = Box(7.55, 6.7, 4.3, 1.25)
     git = Box(7.55, 1.55, 4.3, 1.25)
@@ -1089,27 +1196,37 @@ def env_diagram():
     process(ax, p4, "4.0", "Управление\nзадачами", S - 0.5, band=0.42, color=SC(4))
     process(ax, p5, "5.0", "Обсуждение\nзадач", S - 0.5, band=0.42, color=SC(5))
     db = Box(17.75, 6.7, 2.9, 1.1)
-    store(ax, db, "БД", "project_db\nD1–D5", S - 1, cell=0.6)
+    store(ax, db, "БД", "project_mgmt\nD1–D5", S - 1, cell=0.6)
+    p6 = Box(17.75, 4.6, 2.9, 1.3)
+    process(ax, p6, "6.0", "Формирование\nотчётов", S - 0.5, band=0.42, color=SC(6))
 
     A = dict(size=S - 1.5, lw=1.6, head=15)
     arrow(ax, [cat.right(-0.25), p1.left(0.5)], color=SC(1), dashed=True, **A)
-    label(ax, 10.55, 10.15, "① учётная\nзапись", S - 1.5, color=SC(1))
-    carrow(ax, lead.right(-0.2), p4.left(0.35), rad=0.1, text="② задача SHOP-42,\nисполнитель, срок",
+    label(ax, 10.45, 10.15, "1) учётная\nзапись", S - 1.5, color=SC(1))
+    carrow(ax, lead.right(-0.2), p4.left(0.35), rad=0.1, text="2) задача SHOP-42,\nисполнитель, срок",
            at=(6.9, 8.7), color=SC(4), size=S - 1.5)
-    arrow(ax, [p4.right(), db.left()], "③", at=(16.0, 6.95), color=SC(4), **A)
+    arrow(ax, [p4.right(), db.left()], "3)", at=(16.0, 6.95), color=SC(4), **A)
     arrow(ax, [p4.left(-0.2), (ntf.r, ntf.y - 0.0)], color=SC(4), dashed=True, **A)
-    label(ax, 10.75, 6.05, "④ назначена\nSHOP-42", S - 1.5, color=SC(4))
-    arrow(ax, [ntf.left(-0.3), (2.7, ntf.y - 0.3), (2.7, mem.t)], "⑤ письмо, событие\nв календаре",
+    label(ax, 10.75, 6.05, "4) назначена\nSHOP-42", S - 1.5, color=SC(4))
+    arrow(ax, [ntf.left(-0.3), (2.7, ntf.y - 0.3), (2.7, mem.t)], "5) письмо, событие\nв календаре",
           at=(4.15, 5.75), color=SC(4), dashed=True, **A)
-    carrow(ax, mem.bottom(0.6), git.left(-0.2), rad=0.25, text="⑥ коммит\n«SHOP-42: …»", at=(3.85, 1.25),
+    carrow(ax, mem.bottom(0.6), git.left(-0.2), rad=0.25, text="6) коммит\n«SHOP-42: …»", at=(3.85, 1.25),
            color=SC(4), dashed=True, size=S - 1.5)
-    carrow(ax, git.right(0.2), p4.bottom(-0.9), rad=-0.25, text="⑦ веб-хук:\nSHOP-42 → review",
+    carrow(ax, git.right(0.2), p4.bottom(-0.9), rad=-0.25, text="7) веб-хук:\nSHOP-42 → review",
            at=(10.8, 3.65), color=SC(4), dashed=True, size=S - 1.5)
-    arrow(ax, [mem.bottom(-0.8), (1.1, 0.35), (p5.x, 0.35), p5.bottom()], "⑧ комментарий к задаче",
+    arrow(ax, [mem.bottom(-0.8), (1.1, 0.35), (p5.x, 0.35), p5.bottom()], "8) комментарий к задаче",
           at=(10.6, 0.35), color=SC(5), **A)
 
-    ax.text(0.15, 12.55, "①–⑧ — порядок шагов; пунктир — обмен с внешним сервисом", fontsize=S - 2.5,
-            color=GREY, va="center")
+    # отчёт заказчику: заказчик вне системы, обмен идёт через руководителя и сервис уведомлений
+    arrow(ax, [db.bottom(), p6.top()], color=SC(6), **A)
+    arrow(ax, [p6.left(), (8.6, p6.y), (8.6, ntf.b)], "9) отчёт заказчику", at=(13.9, p6.y), color=SC(6),
+          dashed=True, **A)
+    arrow(ax, [ntf.left(0.3), (cust.r, ntf.y + 0.3)], color=SC(6), dashed=True, **A)
+    label(ax, 4.5, 7.55, "10) письмо\nс отчётом", S - 1.5, color=SC(6))
+    arrow(ax, [cust.top(), lead.bottom()], "требования", at=(cust.x, 8.62), color=GREY, **A)
+
+    ax.text(0.15, 12.55, "Шаги 1–8 — путь задачи, 9–10 — отчёт заказчику; пунктир — обмен с внешним сервисом; "
+            "серым — обмен вне системы", fontsize=S - 2.5, color=GREY, va="center")
     save(fig, "env")
 
 
@@ -1159,17 +1276,20 @@ def components_diagram():
     ax.plot([db.r, db.r], [db.b + e, db.t - e], color=LINE, lw=1.6, zorder=3)
     ax.add_patch(matplotlib.patches.Arc((db.x, db.b + e), db.w, 2 * e, theta1=180, theta2=360, color=LINE, lw=1.6, zorder=3))
     ax.add_patch(Ellipse((db.x, db.t - e), db.w, 2 * e, fc="#d6ecd6", ec=LINE, lw=1.6, zorder=3))
-    ax.text(db.x, db.t - 1.25, "ИР: БД project_db", ha="center", va="center", fontsize=S + 0.5, weight="bold", zorder=5)
-    for k, t in enumerate(["D1 Пользователи (users)", "D2 Проекты (projects)", "D3 Участники (project_members)",
-                           "D4 Задачи и метки (tasks, marks, …)", "D5 Комментарии (comments)"]):
+    ax.text(db.x, db.t - 1.25, "ИР: БД project_mgmt", ha="center", va="center", fontsize=S + 0.5, weight="bold", zorder=5)
+    for k, t in enumerate(["D1 Пользователи (users)", "D2 Проекты, договоры (projects, …)", "D3 Участники (project_members)",
+                           "D4 Задачи, спринты (tasks, sprints, …)", "D5 Комментарии (comments)"]):
         ax.text(db.l + 0.35, db.t - 1.85 - k * 0.46, t, ha="left", va="center", fontsize=S - 2, zorder=5)
 
-    K2 = comp(8.0, 13.0, "К2", "Проекты", ["2.1 Создание, код", "2.2 Владелец", "2.3 Статус, сроки", "2.4 Удаление"], 2)
+    K2 = comp(8.0, 12.8, "К2", "Проекты", ["2.1 Создание, код", "2.2 Владелец", "2.3 Статус, сроки", "2.4 Удаление",
+                                         "2.5 Заказчик", "2.6 Договор"], 2)
     K3 = comp(17.4, 13.0, "К3", "Команды", ["3.1 Добавление", "3.2 Назначение роли", "3.3 Исключение"], 3)
     K6 = comp(5.9, 8.3, "К6", "Отчётность", ["6.1 Операционные запросы", "6.2 Агрегаты, подзапросы",
-                                             "6.3 Отчёт о рисках"], 6)
+                                             "6.3 Отчёт о рисках", "6.4 Отчёт заказчику",
+                                             "6.5 Отчёт по договорам", "6.6 Скорость, время цикла"], 6)
     K4 = comp(19.5, 8.3, "К4", "Задачи", ["4.1 Создание, оценка", "4.2 Назначение", "4.3 Статус, приоритет",
-                                          "4.4 Удаление", "4.5 Метки"], 4)
+                                          "4.4 Удаление", "4.5 Метки", "4.6 Спринты, планирование",
+                                          "4.7 Закрытие спринта", "4.8 Пакетная загрузка"], 4)
     K1 = comp(8.0, 3.6, "К1", "Пользователи", ["1.1 Регистрация", "1.2 Изменение", "1.3 Удаление"], 1)
     K5 = comp(17.4, 3.6, "К5", "Обсуждения", ["5.1 Добавление", "5.2 Просмотр", "5.3 Удаление"], 5)
 
@@ -1194,6 +1314,8 @@ def components_diagram():
     arrow(ax, [E3.bottom(-1.0), (22.55, 3.6), K5.right()], "З8", at=(21.6, 3.6), size=L, color=SC(5))
     arrow(ax, [K4.bottom(1.1), (20.6, 0.85), E6.right(0.1)], "О3", at=(20.6, 5.4), size=L, color=SC(4))
     arrow(ax, [K5.bottom(-0.8), (K5.x - 0.8, 1.25), E6.right(0.5)], "О4", at=(16.6, 1.9), size=L, color=SC(5))
+    arrow(ax, [K6.bottom(1.5), (K6.x + 1.5, 5.25), (11.2, 5.25), (11.2, E6.t)], "О5", at=(8.2, 5.25), size=L,
+          color=SC(6))
     arrow(ax, [E6.right(-0.35), (24.6, 0.4), E3.bottom(1.05)], "доставка\nуведомлений", at=(24.6, 3.2), size=L - 1,
           color=GREY, dashed=True)
 

@@ -1,0 +1,73 @@
+SELECT p.code, u.full_name, pm.role,
+               (SELECT count(*) FROM tasks t
+                 WHERE t.project_id = pm.project_id AND t.assignee_id = pm.user_id
+                   AND t.status <> 'done') AS open_tasks,
+               (SELECT COALESCE(sum(t.estimate_hours), 0) FROM tasks t
+                 WHERE t.project_id = pm.project_id AND t.assignee_id = pm.user_id
+                   AND t.status <> 'done') AS open_hours,
+               (SELECT max(c.created_at) FROM comments c JOIN tasks t ON t.task_id = c.task_id
+                 WHERE t.project_id = pm.project_id AND c.author_id = pm.user_id) AS last_comment
+        FROM project_members pm
+        JOIN projects p ON p.project_id = pm.project_id
+        JOIN users u ON u.user_id = pm.user_id
+        WHERE p.status = 'active'
+
+Hash Join  (cost=102.45..1823902.54 rows=3607 width=84) (actual time=310.057..476.690 rows=3617 loops=1)
+  Hash Cond: (pm.user_id = u.user_id)
+  Buffers: shared hit=66423
+  ->  Hash Join  (cost=35.14..150.32 rows=3607 width=21) (actual time=309.411..311.232 rows=3617 loops=1)
+        Hash Cond: (pm.project_id = p.project_id)
+        Buffers: shared hit=54
+        ->  Seq Scan on project_members pm  (cost=0.00..99.29 rows=6029 width=16) (actual time=0.010..0.496 rows=6029 loops=1)
+              Buffers: shared hit=39
+        ->  Hash  (cost=27.60..27.60 rows=603 width=9) (actual time=309.361..309.361 rows=603 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 34kB
+              Buffers: shared hit=15
+              ->  Seq Scan on projects p  (cost=0.00..27.60 rows=603 width=9) (actual time=309.162..309.271 rows=603 loops=1)
+                    Filter: ((status)::text = 'active'::text)
+                    Rows Removed by Filter: 405
+                    Buffers: shared hit=15
+  ->  Hash  (cost=42.14..42.14 rows=2014 width=27) (actual time=0.512..0.512 rows=2014 loops=1)
+        Buckets: 2048  Batches: 1  Memory Usage: 135kB
+        Buffers: shared hit=22
+        ->  Seq Scan on users u  (cost=0.00..42.14 rows=2014 width=27) (actual time=0.008..0.206 rows=2014 loops=1)
+              Buffers: shared hit=22
+  SubPlan 1
+    ->  Aggregate  (cost=8.32..8.33 rows=1 width=8) (actual time=0.003..0.003 rows=1 loops=3617)
+          Buffers: shared hit=11479
+          ->  Index Scan using ix_tasks_project_assignee on tasks t  (cost=0.29..8.31 rows=1 width=0) (actual time=0.001..0.003 rows=4 loops=3617)
+                Index Cond: ((project_id = pm.project_id) AND (assignee_id = pm.user_id))
+                Filter: ((status)::text <> 'done'::text)
+                Rows Removed by Filter: 12
+                Buffers: shared hit=11479
+  SubPlan 2
+    ->  Aggregate  (cost=8.32..8.33 rows=1 width=32) (actual time=0.003..0.003 rows=1 loops=3617)
+          Buffers: shared hit=11479
+          ->  Index Scan using ix_tasks_project_assignee on tasks t_1  (cost=0.29..8.31 rows=1 width=4) (actual time=0.001..0.002 rows=4 loops=3617)
+                Index Cond: ((project_id = pm.project_id) AND (assignee_id = pm.user_id))
+                Filter: ((status)::text <> 'done'::text)
+                Rows Removed by Filter: 12
+                Buffers: shared hit=11479
+  SubPlan 3
+    ->  Aggregate  (cost=488.93..488.94 rows=1 width=8) (actual time=0.038..0.038 rows=1 loops=3617)
+          Buffers: shared hit=43389
+          ->  Hash Join  (cost=185.92..488.92 rows=1 width=8) (actual time=0.026..0.036 rows=33 loops=3617)
+                Hash Cond: (c.task_id = t_2.task_id)
+                Buffers: shared hit=43389
+                ->  Index Scan using ix_comments_author on comments c  (cost=0.29..303.03 rows=100 width=12) (actual time=0.001..0.010 rows=100 loops=3617)
+                      Index Cond: (author_id = pm.user_id)
+                      Buffers: shared hit=18132
+                ->  Hash  (cost=184.39..184.39 rows=99 width=4) (actual time=0.018..0.018 rows=100 loops=3617)
+                      Buckets: 1024  Batches: 1  Memory Usage: 12kB
+                      Buffers: shared hit=25257
+                      ->  Index Scan using ix_tasks_project_assignee on tasks t_2  (cost=0.29..184.39 rows=99 width=4) (actual time=0.001..0.011 rows=100 loops=3617)
+                            Index Cond: (project_id = pm.project_id)
+                            Buffers: shared hit=25257
+Planning:
+  Buffers: shared hit=599
+Planning Time: 2.144 ms
+JIT:
+  Functions: 62
+  Options: Inlining true, Optimization true, Expressions true, Deforming true
+  Timing: Generation 1.857 ms, Inlining 61.570 ms, Optimization 138.553 ms, Emission 109.095 ms, Total 311.075 ms
+Execution Time: 493.990 ms

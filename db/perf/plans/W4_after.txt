@@ -1,0 +1,15 @@
+DELETE FROM tasks WHERE project_id = 534
+
+Delete on tasks  (cost=0.29..275.41 rows=0 width=0) (actual time=0.249..0.250 rows=0 loops=1)
+  Buffers: shared hit=214
+  ->  Index Scan using ix_tasks_project_assignee on tasks  (cost=0.29..275.41 rows=150 width=6) (actual time=0.034..0.093 rows=100 loops=1)
+        Index Cond: (project_id = 534)
+        Buffers: shared hit=7
+Planning:
+  Buffers: shared hit=116
+Planning Time: 0.318 ms
+Trigger for constraint comments_task_id_fkey: time=1.226 calls=100
+Trigger for constraint marks_tasks_task_id_fkey: time=0.598 calls=100
+Trigger for constraint task_status_history_task_id_fkey: time=0.767 calls=100
+Trigger trg_tasks_audit: time=4.991 calls=100
+Execution Time: 7.923 ms

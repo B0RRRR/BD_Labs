@@ -1,0 +1,25 @@
+UPDATE tasks SET priority = priority % 5 + 1
+        WHERE task_id IN (SELECT task_id FROM tasks ORDER BY task_id LIMIT 10000)
+
+Update on tasks  (cost=806.60..7187.98 rows=0 width=0) (actual time=169.895..169.900 rows=0 loops=1)
+  Buffers: shared hit=274160 dirtied=202 written=202
+  ->  Hash Semi Join  (cost=806.60..7187.98 rows=10000 width=36) (actual time=10.364..32.333 rows=10000 loops=1)
+        Hash Cond: (tasks.task_id = "ANY_subquery".task_id)
+        Buffers: shared hit=34017
+        ->  Seq Scan on tasks  (cost=0.00..5830.36 rows=129436 width=12) (actual time=0.005..13.271 rows=100045 loops=1)
+              Buffers: shared hit=4536
+        ->  Hash  (cost=681.60..681.60 rows=10000 width=32) (actual time=10.266..10.269 rows=10000 loops=1)
+              Buckets: 16384  Batches: 1  Memory Usage: 753kB
+              Buffers: shared hit=29481
+              ->  Subquery Scan on "ANY_subquery"  (cost=0.42..681.60 rows=10000 width=32) (actual time=0.033..8.867 rows=10000 loops=1)
+                    Buffers: shared hit=29481
+                    ->  Limit  (cost=0.42..581.60 rows=10000 width=4) (actual time=0.018..7.792 rows=10000 loops=1)
+                          Buffers: shared hit=29481
+                          ->  Index Only Scan using tasks_pkey on tasks tasks_1  (cost=0.42..7522.96 rows=129436 width=4) (actual time=0.017..7.316 rows=10000 loops=1)
+                                Heap Fetches: 29406
+                                Buffers: shared hit=29481
+Planning:
+  Buffers: shared hit=322
+Planning Time: 1.503 ms
+Trigger trg_tasks_audit: time=504.031 calls=10000
+Execution Time: 674.971 ms

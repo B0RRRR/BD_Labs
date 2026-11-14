@@ -1,0 +1,42 @@
+SELECT number, status, capacity_hours, planned_hours, done_hours, load_pct
+        FROM v_sprint_load WHERE project_id = 531 ORDER BY number
+
+Sort  (cost=444.58..444.60 rows=8 width=110) (actual time=0.245..0.246 rows=8 loops=1)
+  Sort Key: v_sprint_load.number
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=63
+  ->  Subquery Scan on v_sprint_load  (cost=443.00..444.46 rows=8 width=110) (actual time=0.200..0.218 rows=8 loops=1)
+        Buffers: shared hit=60
+        ->  GroupAggregate  (cost=443.00..444.38 rows=8 width=170) (actual time=0.199..0.217 rows=8 loops=1)
+              Group Key: s.sprint_id
+              Buffers: shared hit=60
+              ->  Sort  (cost=443.00..443.24 rows=96 width=31) (actual time=0.187..0.190 rows=96 loops=1)
+                    Sort Key: s.sprint_id
+                    Sort Method: quicksort  Memory: 30kB
+                    Buffers: shared hit=60
+                    ->  Nested Loop Left Join  (cost=8.87..439.84 rows=96 width=31) (actual time=0.079..0.141 rows=96 loops=1)
+                          Buffers: shared hit=57
+                          ->  Nested Loop  (cost=4.48..35.44 rows=8 width=22) (actual time=0.058..0.065 rows=8 loops=1)
+                                Buffers: shared hit=13
+                                ->  Index Only Scan using uq_projects_customer on projects p  (cost=0.28..8.29 rows=1 width=4) (actual time=0.024..0.025 rows=1 loops=1)
+                                      Index Cond: (project_id = 531)
+                                      Heap Fetches: 1
+                                      Buffers: shared hit=3
+                                ->  Bitmap Heap Scan on sprints s  (cost=4.21..27.07 rows=8 width=22) (actual time=0.028..0.034 rows=8 loops=1)
+                                      Recheck Cond: (project_id = 531)
+                                      Heap Blocks: exact=8
+                                      Buffers: shared hit=10
+                                      ->  Bitmap Index Scan on excl_sprints_overlap  (cost=0.00..4.21 rows=8 width=0) (actual time=0.023..0.023 rows=8 loops=1)
+                                            Index Cond: (project_id = 531)
+                                            Buffers: shared hit=2
+                          ->  Bitmap Heap Scan on tasks t  (cost=4.39..50.43 rows=12 width=13) (actual time=0.006..0.007 rows=12 loops=8)
+                                Recheck Cond: (sprint_id = s.sprint_id)
+                                Heap Blocks: exact=28
+                                Buffers: shared hit=44
+                                ->  Bitmap Index Scan on ix_tasks_sprint  (cost=0.00..4.38 rows=12 width=0) (actual time=0.004..0.004 rows=12 loops=8)
+                                      Index Cond: (sprint_id = s.sprint_id)
+                                      Buffers: shared hit=16
+Planning:
+  Buffers: shared hit=456
+Planning Time: 1.244 ms
+Execution Time: 0.954 ms

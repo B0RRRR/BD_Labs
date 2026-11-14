@@ -1,0 +1,27 @@
+UPDATE tasks SET sprint_id = NULL
+        WHERE task_id IN (SELECT task_id FROM tasks WHERE sprint_id IS NOT NULL ORDER BY task_id LIMIT 10000)
+
+Update on tasks  (cost=694.48..6688.24 rows=0 width=0) (actual time=136.883..136.887 rows=0 loops=1)
+  Buffers: shared hit=207184 dirtied=174 written=174
+  ->  Hash Semi Join  (cost=694.48..6688.24 rows=10000 width=38) (actual time=10.524..30.160 rows=10000 loops=1)
+        Hash Cond: (tasks.task_id = "ANY_subquery".task_id)
+        Buffers: shared hit=32488
+        ->  Seq Scan on tasks  (cost=0.00..5354.91 rows=200991 width=10) (actual time=0.003..10.741 rows=100045 loops=1)
+              Buffers: shared hit=3345
+        ->  Hash  (cost=569.48..569.48 rows=10000 width=32) (actual time=10.406..10.408 rows=10000 loops=1)
+              Buckets: 16384  Batches: 1  Memory Usage: 753kB
+              Buffers: shared hit=29143
+              ->  Subquery Scan on "ANY_subquery"  (cost=0.42..569.48 rows=10000 width=32) (actual time=0.037..9.051 rows=10000 loops=1)
+                    Buffers: shared hit=29143
+                    ->  Limit  (cost=0.42..469.48 rows=10000 width=4) (actual time=0.019..7.980 rows=10000 loops=1)
+                          Buffers: shared hit=29143
+                          ->  Index Scan using tasks_pkey on tasks tasks_1  (cost=0.42..8123.29 rows=173174 width=4) (actual time=0.018..7.485 rows=10000 loops=1)
+                                Filter: (sprint_id IS NOT NULL)
+                                Rows Removed by Filter: 1654
+                                Buffers: shared hit=29143
+Planning:
+  Buffers: shared hit=328
+Planning Time: 1.801 ms
+Trigger trg_tasks_audit: time=639.832 calls=10000
+Trigger trg_tasks_sprint_capacity: time=6.852 calls=10000
+Execution Time: 777.658 ms
