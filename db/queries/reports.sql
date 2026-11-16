@@ -148,27 +148,47 @@ ORDER BY CASE risk WHEN 'высокий' THEN 1 WHEN 'средний' THEN 2
 
 
 -- =====================================================================
--- Отчёт 2. Исполнение договоров: бюджет, скорость и прогноз завершения
+-- Отчёт 2. Исполнение договоров: план/факт по бюджету, скорость и прогноз завершения
 --
--- Вопрос руководства: «Укладываются ли внешние проекты в бюджет часов по договору
--- и успеют ли к сроку при текущей скорости команды?»
---   tasks              → spent      — выполнено и осталось часов по проекту
+-- Вопрос руководства: «Уложатся ли внешние проекты в бюджет часов по договору с учётом
+-- фактических трудозатрат и успеют ли к сроку при текущей скорости команды?»
+--   worklogs           → fact       — фактически списанные часы по каждой задаче
+--   tasks, fact        → spent      — факт и оценка выполненных задач, остаток оценок;
+--                                     коэффициент точности оценок k = факт / оценка
+--   tasks, spent       → remaining  — прогноз по незавершённым задачам: k × оценка,
+--                                     но не меньше уже списанного
 --   sprints, tasks     → sprint_v   — скорость каждого закрытого спринта,
 --                                     номер спринта с конца (ROW_NUMBER)
 --   sprint_v           → velocity   — средняя скорость трёх последних спринтов
---   contracts, ...     → forecast   — сколько спринтов осталось, прогноз даты завершения
---   forecast           → итог       — доля бюджета, стоимость часа, вердикт
+--   contracts, ...     → forecast   — прогноз трудоёмкости, сколько спринтов осталось, дата завершения
+--   forecast           → итог       — факт и прогноз против бюджета, стоимость часа, вердикт
 -- Спринт длится две недели, поэтому прогноз = дата отчёта + оставшиеся спринты × 14 дней.
 -- =====================================================================
 WITH params AS (
     SELECT :'today'::date AS report_date
+), fact AS (
+    SELECT task_id, sum(hours) AS hours
+    FROM worklogs
+    GROUP BY task_id
 ), spent AS (
-    SELECT project_id,
-           COALESCE(sum(estimate_hours) FILTER (WHERE status = 'done'), 0)  AS done_hours,
-           COALESCE(sum(estimate_hours) FILTER (WHERE status <> 'done'), 0) AS left_hours,
-           count(*) FILTER (WHERE status <> 'done' AND estimate_hours IS NULL) AS not_estimated
-    FROM tasks
-    GROUP BY project_id
+    SELECT t.project_id,
+           COALESCE(sum(f.hours), 0)                                              AS fact_hours,
+           COALESCE(sum(f.hours) FILTER (WHERE t.status = 'done'), 0)             AS fact_done,
+           COALESCE(sum(t.estimate_hours) FILTER (WHERE t.status = 'done'), 0)   AS done_hours,
+           COALESCE(sum(t.estimate_hours) FILTER (WHERE t.status <> 'done'), 0)  AS left_hours,
+           count(*) FILTER (WHERE t.status <> 'done' AND t.estimate_hours IS NULL) AS not_estimated
+    FROM tasks t
+    LEFT JOIN fact f ON f.task_id = t.task_id
+    GROUP BY t.project_id
+), remaining AS (
+    SELECT t.project_id,
+           sum(GREATEST(COALESCE(f.hours, 0),
+                        COALESCE(sp.fact_done / NULLIF(sp.done_hours, 0), 1) * COALESCE(t.estimate_hours, 0))) AS hours
+    FROM tasks t
+    JOIN spent sp     ON sp.project_id = t.project_id
+    LEFT JOIN fact f  ON f.task_id = t.task_id
+    WHERE t.status <> 'done'
+    GROUP BY t.project_id
 ), sprint_v AS (
     SELECT s.project_id,
            COALESCE(sum(t.estimate_hours) FILTER (WHERE t.status = 'done'), 0) AS done_hours,
@@ -191,6 +211,9 @@ WITH params AS (
            c.number,
            c.amount,
            c.budget_hours,
+           COALESCE(sp.fact_hours, 0)                      AS fact_hours,
+           sp.fact_done / NULLIF(sp.done_hours, 0)         AS accuracy,
+           COALESCE(sp.fact_done, 0) + COALESCE(rm.hours, 0) AS forecast_hours,
            COALESCE(sp.done_hours, 0)                      AS done_hours,
            COALESCE(sp.left_hours, 0)                      AS left_hours,
            COALESCE(sp.not_estimated, 0)                   AS not_estimated,
@@ -205,6 +228,7 @@ WITH params AS (
     JOIN customers cu     ON cu.customer_id = c.customer_id
     CROSS JOIN params pr
     LEFT JOIN spent sp    ON sp.project_id = c.project_id
+    LEFT JOIN remaining rm ON rm.project_id = c.project_id
     LEFT JOIN velocity v  ON v.project_id = c.project_id
 )
 SELECT customer,
@@ -212,8 +236,10 @@ SELECT customer,
        number,
        status,
        budget_hours,
-       done_hours + left_hours                                      AS planned_hours,
-       round(100 * (done_hours + left_hours) / budget_hours, 1)     AS budget_pct,
+       fact_hours,
+       round(accuracy, 2)                                           AS accuracy,
+       round(forecast_hours, 1)                                     AS forecast_hours,
+       round(100 * forecast_hours / budget_hours, 1)                AS budget_pct,
        round(amount / budget_hours)                                 AS rub_per_hour,
        done_hours,
        left_hours,
@@ -223,10 +249,10 @@ SELECT customer,
        forecast_end,
        end_date,
        CASE
-           WHEN status IN ('completed', 'cancelled') AND done_hours > budget_hours
+           WHEN status IN ('completed', 'cancelled') AND fact_hours > budget_hours
                                                         THEN 'закрыт с перерасходом'
            WHEN status IN ('completed', 'cancelled')    THEN 'закрыт'
-           WHEN done_hours + left_hours > budget_hours  THEN 'перерасход бюджета'
+           WHEN forecast_hours > budget_hours           THEN 'перерасход бюджета'
            WHEN hours_per_sprint IS NULL                THEN 'нет данных о скорости'
            WHEN forecast_end > end_date                 THEN 'риск срыва срока'
            ELSE 'в норме'

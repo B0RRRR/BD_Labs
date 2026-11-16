@@ -1,17 +1,17 @@
 INSERT INTO tasks (project_id, title, estimate_hours, priority)
         SELECT 531, 'Пакетная задача ' || g, 4, 3 FROM generate_series(1, 10000) AS g
 
-Insert on tasks  (cost=0.00..300.00 rows=0 width=0) (actual time=62.023..62.023 rows=0 loops=1)
-  Buffers: shared hit=109722 dirtied=177 written=253
-  ->  Function Scan on generate_series g  (cost=0.00..300.00 rows=10000 width=558) (actual time=0.702..5.862 rows=10000 loops=1)
+Insert on tasks  (cost=0.00..300.00 rows=0 width=0) (actual time=60.558..60.559 rows=0 loops=1)
+  Buffers: shared hit=109726 dirtied=177 written=177
+  ->  Function Scan on generate_series g  (cost=0.00..300.00 rows=10000 width=558) (actual time=0.827..5.951 rows=10000 loops=1)
         Buffers: shared hit=10012
 Planning:
   Buffers: shared hit=30
-Planning Time: 0.195 ms
-Trigger for constraint tasks_project_id_fkey: time=46.828 calls=10000
-Trigger for constraint fk_tasks_sprint: time=5.455 calls=10000
-Trigger for constraint fk_tasks_assignee_member: time=4.024 calls=10000
-Trigger trg_tasks_audit: time=457.412 calls=10000
-Trigger trg_tasks_sprint_capacity: time=6.071 calls=10000
-Trigger trg_tasks_status_log: time=306.483 calls=10000
-Execution Time: 885.522 ms
+Planning Time: 0.196 ms
+Trigger for constraint tasks_project_id_fkey: time=43.819 calls=10000
+Trigger for constraint fk_tasks_sprint: time=5.117 calls=10000
+Trigger for constraint fk_tasks_assignee_member: time=3.714 calls=10000
+Trigger trg_tasks_audit: time=409.159 calls=10000
+Trigger trg_tasks_sprint_capacity: time=5.831 calls=10000
+Trigger trg_tasks_status_log: time=384.928 calls=10000
+Execution Time: 910.300 ms

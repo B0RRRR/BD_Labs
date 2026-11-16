@@ -1,14 +1,14 @@
 UPDATE tasks SET sprint_id = 5904 WHERE task_id = 52259
 
-Update on tasks  (cost=0.42..8.44 rows=0 width=0) (actual time=1.910..1.910 rows=0 loops=1)
-  Buffers: shared hit=539
-  ->  Index Scan using tasks_pkey on tasks  (cost=0.42..8.44 rows=1 width=10) (actual time=0.045..0.046 rows=1 loops=1)
+Update on tasks  (cost=0.42..8.44 rows=0 width=0) (actual time=1.807..1.808 rows=0 loops=1)
+  Buffers: shared hit=541
+  ->  Index Scan using tasks_pkey on tasks  (cost=0.42..8.44 rows=1 width=10) (actual time=0.041..0.042 rows=1 loops=1)
         Index Cond: (task_id = 52259)
         Buffers: shared hit=6
 Planning:
   Buffers: shared hit=116
-Planning Time: 0.426 ms
-Trigger for constraint fk_tasks_sprint: time=0.084 calls=1
-Trigger trg_tasks_audit: time=0.669 calls=1
-Trigger trg_tasks_sprint_capacity: time=1.150 calls=1
-Execution Time: 2.748 ms
+Planning Time: 0.356 ms
+Trigger for constraint fk_tasks_sprint: time=0.077 calls=1
+Trigger trg_tasks_audit: time=0.727 calls=1
+Trigger trg_tasks_sprint_capacity: time=1.176 calls=1
+Execution Time: 2.677 ms

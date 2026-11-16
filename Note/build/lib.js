@@ -140,7 +140,7 @@ const borders = { top: border, bottom: border, left: border, right: border, insi
 function cellParas(content, o) {
   const items = Array.isArray(content) ? content : [content];
   return items.map((t) => new Paragraph({
-    alignment: o.align || AlignmentType.LEFT,
+    alignment: o.align || AlignmentType.LEFT, keepNext: !!o.keepNext,
     spacing: { before: 0, after: 0, line: 240 },
     children: runs(String(t), { size: o.size || 24, bold: o.bold, monoSize: (o.size || 24) - 2 }),
   }));
@@ -151,7 +151,7 @@ function table(key, caption, headers, rows, widths, o = {}) {
   const n = markCreated("tab", key);
   const total = widths.reduce((a, b) => a + b, 0);
   const size = o.size || 24;
-  const mk = (cells, isHead) => new TableRow({
+  const mk = (cells, isHead, last) => new TableRow({
     tableHeader: isHead, cantSplit: true,
     children: cells.map((c, i) => {
       if (c === null) return null;     // ячейка занята объединением по вертикали
@@ -164,7 +164,8 @@ function table(key, caption, headers, rows, widths, o = {}) {
         verticalAlign: isHead ? VerticalAlign.CENTER : VerticalAlign.TOP,
         margins: { top: 40, bottom: 40, left: 90, right: 90 },
         children: cellParas(spec.t, {
-          size, bold: isHead,
+          size, bold: false,   // ГОСТ 7.32, 6.1.1: полужирный — только в заголовках
+          keepNext: o.keep && !last,   // o.keep — таблица не разрывается между страницами
           align: isHead ? AlignmentType.CENTER : (o.align ? o.align[i] : AlignmentType.LEFT),
         }),
       });
@@ -176,7 +177,7 @@ function table(key, caption, headers, rows, widths, o = {}) {
   });
   const tbl = new Table({
     width: { size: total, type: WidthType.DXA }, columnWidths: widths, borders,
-    rows: [mk(headers, true), ...rows.map((r) => mk(r, false))],
+    rows: [mk(headers, true, false), ...rows.map((r, k) => mk(r, false, k === rows.length - 1))],
   });
   const after = new Paragraph({ spacing: { before: 0, after: 120, line: 240 }, children: [] });
   return [caption_p, tbl, after];
@@ -188,7 +189,7 @@ function formula(key, mathChildren, o = {}) {
   const w = o.width || PORTRAIT_W;
   return new Paragraph({
     tabStops: [{ type: TabStopType.CENTER, position: Math.round(w / 2) }, { type: TabStopType.RIGHT, position: w }],
-    spacing: { before: 240, after: 240, line: 276 },
+    spacing: { before: 480, after: 480, line: 276 },   // ГОСТ 7.32, 6.8.1: свободная строка над и под формулой
     keepNext: true,
     children: [new TextRun({ text: "\t", font: FONT, size: 28 }), new OMath({ children: mathChildren }),
       new TextRun({ text: `\t(${n})`, font: FONT, size: 28 })],

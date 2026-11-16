@@ -1,20 +1,20 @@
 SELECT old_status, new_status, changed_at, changed_by
         FROM task_status_history WHERE task_id = 52189 ORDER BY changed_at
 
-Gather Merge  (cost=6289.29..6289.52 rows=2 width=26) (actual time=10.996..14.241 rows=4 loops=1)
+Gather Merge  (cost=6289.29..6289.52 rows=2 width=27) (actual time=9.719..12.655 rows=4 loops=1)
   Workers Planned: 1
   Workers Launched: 1
   Buffers: shared hit=2923
-  ->  Sort  (cost=5289.28..5289.29 rows=2 width=26) (actual time=9.119..9.120 rows=2 loops=2)
+  ->  Sort  (cost=5289.28..5289.29 rows=2 width=27) (actual time=7.942..7.942 rows=2 loops=2)
         Sort Key: changed_at
         Sort Method: quicksort  Memory: 25kB
         Buffers: shared hit=2923
         Worker 0:  Sort Method: quicksort  Memory: 25kB
-        ->  Parallel Seq Scan on task_status_history  (cost=0.00..5289.27 rows=2 width=26) (actual time=6.802..9.069 rows=2 loops=2)
+        ->  Parallel Seq Scan on task_status_history  (cost=0.00..5289.27 rows=2 width=27) (actual time=5.876..7.903 rows=2 loops=2)
               Filter: (task_id = 52189)
               Rows Removed by Filter: 163420
               Buffers: shared hit=2886
 Planning:
   Buffers: shared hit=93
-Planning Time: 0.287 ms
-Execution Time: 14.297 ms
+Planning Time: 0.283 ms
+Execution Time: 12.716 ms

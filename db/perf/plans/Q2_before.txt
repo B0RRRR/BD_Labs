@@ -1,41 +1,41 @@
 SELECT number, status, capacity_hours, planned_hours, done_hours, load_pct
         FROM v_sprint_load WHERE project_id = 531 ORDER BY number
 
-Sort  (cost=2969.37..2969.39 rows=8 width=110) (actual time=14.075..14.078 rows=8 loops=1)
+Sort  (cost=2969.37..2969.39 rows=8 width=110) (actual time=13.395..13.397 rows=8 loops=1)
   Sort Key: v_sprint_load.number
   Sort Method: quicksort  Memory: 25kB
   Buffers: shared hit=1684
-  ->  Subquery Scan on v_sprint_load  (cost=2967.79..2969.25 rows=8 width=110) (actual time=14.034..14.056 rows=8 loops=1)
+  ->  Subquery Scan on v_sprint_load  (cost=2967.79..2969.25 rows=8 width=110) (actual time=13.339..13.375 rows=8 loops=1)
         Buffers: shared hit=1681
-        ->  GroupAggregate  (cost=2967.79..2969.17 rows=8 width=170) (actual time=14.033..14.055 rows=8 loops=1)
+        ->  GroupAggregate  (cost=2967.79..2969.17 rows=8 width=170) (actual time=13.338..13.373 rows=8 loops=1)
               Group Key: s.sprint_id
               Buffers: shared hit=1681
-              ->  Sort  (cost=2967.79..2968.03 rows=96 width=32) (actual time=14.011..14.018 rows=96 loops=1)
+              ->  Sort  (cost=2967.79..2968.03 rows=96 width=32) (actual time=13.317..13.322 rows=96 loops=1)
                     Sort Key: s.sprint_id
                     Sort Method: quicksort  Memory: 30kB
                     Buffers: shared hit=1681
-                    ->  Nested Loop  (cost=27.45..2964.63 rows=96 width=32) (actual time=7.230..13.983 rows=96 loops=1)
+                    ->  Nested Loop  (cost=27.45..2964.63 rows=96 width=32) (actual time=7.031..13.285 rows=96 loops=1)
                           Buffers: shared hit=1678
-                          ->  Index Only Scan using uq_projects_customer on projects p  (cost=0.28..8.29 rows=1 width=4) (actual time=0.019..0.021 rows=1 loops=1)
+                          ->  Index Only Scan using uq_projects_customer on projects p  (cost=0.28..8.29 rows=1 width=4) (actual time=0.017..0.020 rows=1 loops=1)
                                 Index Cond: (project_id = 531)
                                 Heap Fetches: 1
                                 Buffers: shared hit=3
-                          ->  Hash Right Join  (cost=27.17..2955.37 rows=96 width=32) (actual time=7.210..13.954 rows=96 loops=1)
+                          ->  Hash Right Join  (cost=27.17..2955.37 rows=96 width=32) (actual time=7.012..13.256 rows=96 loops=1)
                                 Hash Cond: (t.sprint_id = s.sprint_id)
                                 Buffers: shared hit=1675
-                                ->  Seq Scan on tasks t  (cost=0.00..2665.45 rows=100045 width=14) (actual time=0.003..6.328 rows=100045 loops=1)
+                                ->  Seq Scan on tasks t  (cost=0.00..2665.45 rows=100045 width=14) (actual time=0.002..5.313 rows=100045 loops=1)
                                       Buffers: shared hit=1665
-                                ->  Hash  (cost=27.07..27.07 rows=8 width=22) (actual time=0.059..0.060 rows=8 loops=1)
+                                ->  Hash  (cost=27.07..27.07 rows=8 width=22) (actual time=0.053..0.054 rows=8 loops=1)
                                       Buckets: 1024  Batches: 1  Memory Usage: 9kB
                                       Buffers: shared hit=10
-                                      ->  Bitmap Heap Scan on sprints s  (cost=4.21..27.07 rows=8 width=22) (actual time=0.028..0.054 rows=8 loops=1)
+                                      ->  Bitmap Heap Scan on sprints s  (cost=4.21..27.07 rows=8 width=22) (actual time=0.022..0.048 rows=8 loops=1)
                                             Recheck Cond: (project_id = 531)
                                             Heap Blocks: exact=8
                                             Buffers: shared hit=10
-                                            ->  Bitmap Index Scan on excl_sprints_overlap  (cost=0.00..4.21 rows=8 width=0) (actual time=0.022..0.022 rows=8 loops=1)
+                                            ->  Bitmap Index Scan on excl_sprints_overlap  (cost=0.00..4.21 rows=8 width=0) (actual time=0.016..0.016 rows=8 loops=1)
                                                   Index Cond: (project_id = 531)
                                                   Buffers: shared hit=2
 Planning:
   Buffers: shared hit=421
-Planning Time: 0.920 ms
-Execution Time: 14.575 ms
+Planning Time: 0.907 ms
+Execution Time: 13.938 ms

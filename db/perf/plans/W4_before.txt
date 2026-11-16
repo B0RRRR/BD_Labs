@@ -1,15 +1,16 @@
 DELETE FROM tasks WHERE project_id = 534
 
-Delete on tasks  (cost=0.42..378.28 rows=0 width=0) (actual time=0.289..0.290 rows=0 loops=1)
-  Buffers: shared hit=283
-  ->  Index Scan using uq_tasks_project_title on tasks  (cost=0.42..378.28 rows=209 width=6) (actual time=0.043..0.071 rows=100 loops=1)
+Delete on tasks  (cost=0.42..376.83 rows=0 width=0) (actual time=0.226..0.226 rows=0 loops=1)
+  Buffers: shared hit=285
+  ->  Index Scan using uq_tasks_project_title on tasks  (cost=0.42..376.83 rows=208 width=6) (actual time=0.042..0.070 rows=100 loops=1)
         Index Cond: (project_id = 534)
         Buffers: shared hit=76
 Planning:
   Buffers: shared hit=88
-Planning Time: 0.291 ms
-Trigger for constraint comments_task_id_fkey: time=856.739 calls=100
-Trigger for constraint marks_tasks_task_id_fkey: time=209.850 calls=100
-Trigger for constraint task_status_history_task_id_fkey: time=1466.845 calls=100
-Trigger trg_tasks_audit: time=17.762 calls=100
-Execution Time: 2551.863 ms
+Planning Time: 0.295 ms
+Trigger for constraint comments_task_id_fkey: time=717.948 calls=100
+Trigger for constraint marks_tasks_task_id_fkey: time=168.849 calls=100
+Trigger for constraint task_status_history_task_id_fkey: time=1198.280 calls=100
+Trigger for constraint worklogs_task_id_fkey: time=2.767 calls=100
+Trigger trg_tasks_audit: time=9.720 calls=100
+Execution Time: 2098.079 ms

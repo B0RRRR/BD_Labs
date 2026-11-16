@@ -65,7 +65,7 @@ WRITES = [
     ("W3", "Вынос 10 000 задач из спринтов (индексированный столбец sprint_id)", """
         UPDATE tasks SET sprint_id = NULL
         WHERE task_id IN (SELECT task_id FROM tasks WHERE sprint_id IS NOT NULL ORDER BY task_id LIMIT 10000)"""),
-    ("W4", "Удаление 100 задач проекта с каскадом на комментарии, историю и метки", """
+    ("W4", "Удаление 100 задач проекта с каскадом на комментарии, историю, метки и трудозатраты", """
         DELETE FROM tasks WHERE project_id = {pid_del}"""),
 ]
 
@@ -138,7 +138,7 @@ def main():
     names = re.findall(r"CREATE INDEX IF NOT EXISTS (\w+)", MIGRATION.read_text(encoding="utf-8"))
     prm = params(db)
     sizes = psql(db, "SELECT count(*) FROM tasks", "SELECT count(*) FROM comments",
-                 "SELECT count(*) FROM task_status_history").split("\n")
+                 "SELECT count(*) FROM task_status_history", "SELECT count(*) FROM worklogs").split("\n")
 
     psql(db, *[f"DROP INDEX IF EXISTS {n}" for n in names], "ANALYZE")
     before = measure(db, QUERIES, prm, repeats, "before", False)
@@ -159,7 +159,7 @@ def main():
         return "\n".join(rows)
 
     md = [f"# Результаты исследования производительности\n",
-          f"Данные: задач {sizes[0]}, комментариев {sizes[1]}, записей истории {sizes[2]}. "
+          f"Данные: задач {sizes[0]}, комментариев {sizes[1]}, записей истории {sizes[2]}, трудозатрат {sizes[3]}. "
           f"Медиана из {repeats} прогонов после прогрева (команды дольше {SLOW_MS // 1000} с — один прогон). "
           f"Индексы миграции 011: {', '.join(names)}; их размер {size}.\n",
           "## Запросы\n", table(QUERIES, before, after),

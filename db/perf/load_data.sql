@@ -5,9 +5,9 @@
 --
 -- Объём задаётся числом задач n_tasks (по умолчанию 100 000), остальное пропорционально:
 --   пользователи n/50, заказчики n/500, проекты n/100 (по 6 участников, до 8 спринтов),
---   задачи n, комментарии 2n, история статусов ≈ 3,4n, метки задач n/2.
+--   задачи n, комментарии 2n, история статусов ≈ 3,4n, метки задач n/2, трудозатраты ≈ 1,4n.
 -- Данные согласованы со всеми ограничениями (исполнитель — участник проекта,
--- спринт — того же проекта, ёмкость спринта не превышена).
+-- спринт — того же проекта, ёмкость спринта не превышена, не больше 24 ч в день).
 \set ON_ERROR_STOP on
 \if :{?n_tasks}
 \else
@@ -20,6 +20,7 @@ BEGIN;
 ALTER TABLE tasks     DISABLE TRIGGER USER;
 ALTER TABLE projects  DISABLE TRIGGER USER;
 ALTER TABLE contracts DISABLE TRIGGER USER;
+ALTER TABLE worklogs  DISABLE TRIGGER USER;
 
 INSERT INTO users (full_name, email, created_at)
 SELECT 'Сотрудник ' || i, 'load' || i || '@load.example', DATE '2025-01-01' + i % 500
@@ -147,9 +148,24 @@ FROM tasks t
 JOIN projects p ON p.project_id = t.project_id AND p.code LIKE 'L%'
 WHERE t.task_id % 2 = 0;
 
+-- Трудозатраты: исполнитель списывает по задаче, взятой в работу, от 0,8 до 1,2 оценки —
+-- не больше 6 ч в день, в последовательные рабочие дни после взятия в работу.
+INSERT INTO worklogs (task_id, user_id, work_date, hours)
+SELECT t.task_id, t.assignee_id, w.work_date, w.hours
+FROM tasks t
+JOIN projects p ON p.project_id = t.project_id AND p.code LIKE 'L%'
+CROSS JOIN LATERAL (SELECT t.estimate_hours * (0.8 + (t.task_id % 5) * 0.1) AS total) f
+CROSS JOIN LATERAL (SELECT ceil(f.total / 6)::integer AS n) c
+CROSS JOIN LATERAL (
+    SELECT t.created_at::date + 1 + t.task_id % 9 + d AS work_date, round(f.total / c.n, 1) AS hours
+    FROM generate_series(0, c.n - 1) AS d
+) w
+WHERE t.status <> 'todo' AND t.assignee_id IS NOT NULL AND w.work_date <= DATE '2026-11-14';
+
 ALTER TABLE tasks     ENABLE TRIGGER USER;
 ALTER TABLE projects  ENABLE TRIGGER USER;
 ALTER TABLE contracts ENABLE TRIGGER USER;
+ALTER TABLE worklogs  ENABLE TRIGGER USER;
 COMMIT;
 
 REFRESH MATERIALIZED VIEW mv_project_stats;

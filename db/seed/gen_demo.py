@@ -7,7 +7,7 @@
 Моделируется история компании с сентября 2025 по 14 ноября 2026 г.:
 14 проектов в разных состояниях, двухнедельные спринты с ограниченной ёмкостью,
 перенос незавершённых задач в следующий спринт, возвраты задач на доработку,
-просрочки, неоценённые и неназначенные задачи, комментарии и метки.
+просрочки, неоценённые и неназначенные задачи, комментарии, метки и трудозатраты.
 """
 import random
 from datetime import date, datetime, time, timedelta
@@ -408,6 +408,57 @@ for t in tasks:
         marks_tasks.append((MARK_NAMES[name], t["id"], t["created"] + timedelta(minutes=R.randint(1, 120))))
 
 
+# ------------------------------------------------------------------ трудозатраты
+# Отдельный генератор случайных чисел: данные выше остаются такими же, как до введения
+# учёта трудозатрат (миграция 013). Исполнитель списывает часы по рабочим дням периодов,
+# когда задача была в работе, не больше 12 ч в день по всем задачам. Факт отличается от
+# оценки на коэффициент точности оценок проекта: у «Мобильного банка» оценки занижены
+# в полтора раза, и по факту ему грозит перерасход бюджета, хотя по оценкам бюджета хватает.
+RW = random.Random(2027)
+ACCURACY = {101: 1.05, 102: 1.0, 104: 1.1, 106: 1.5, 107: 1.05, 108: 1.0, 109: 0.95, 110: 1.15,
+            113: 1.1, 114: 1.0, 103: 1.0, 105: 1.05}
+DAY_CAP = 12
+booked = {}                         # (сотрудник, дата) → часов за день
+worklogs = {}                       # (задача, сотрудник, дата) → часов
+
+
+def work_periods(t):
+    """Периоды «в работе»: от взятия в работу (или возврата) до передачи на проверку
+    либо до сегодняшнего дня, если задача ещё в работе."""
+    periods, begin = [], None
+    for (old, new, at, who) in t["events"]:
+        if new == "in_progress":
+            begin = at
+        elif old == "in_progress" and begin is not None:
+            periods.append((begin.date(), at.date()))
+            begin = None
+    if begin is not None:
+        periods.append((begin.date(), TODAY))
+    return periods
+
+
+for t in tasks:
+    periods = work_periods(t)
+    if not periods or t["assignee"] is None or t["estimate"] is None:
+        continue
+    expected = max(0.5, t["estimate"] * ACCURACY[t["project"]] * RW.uniform(0.8, 1.25))
+    if t["status"] == "in_progress":
+        expected *= RW.uniform(0.3, 0.9)           # работа ещё идёт
+    left = round(expected * 2) / 2
+    days = [d for (a, b) in periods for d in (a + timedelta(n) for n in range((b - a).days + 1))
+            if d.weekday() < 5 and d >= t["created"].date()]
+    for _ in range(4):                             # несколько проходов, пока часы не размещены
+        for d in days:
+            if left <= 0:
+                break
+            free = DAY_CAP - booked.get((t["assignee"], d), 0)
+            h = min(left, RW.choice([2, 3, 4, 4, 6, 8]), free)
+            if h <= 0:
+                continue
+            booked[(t["assignee"], d)] = booked.get((t["assignee"], d), 0) + h
+            worklogs[(t["id"], t["assignee"], d)] = worklogs.get((t["id"], t["assignee"], d), 0) + h
+            left -= h
+
 # ------------------------------------------------------------------ вывод SQL
 def lit(v):
     if v is None:
@@ -437,14 +488,16 @@ def insert(table, cols, rows, chunk=200):
 out.append("""-- Демонстрационный набор данных. Сгенерирован db/seed/gen_demo.py (зерно 2026),
 -- не редактировать вручную. Загружается после всех миграций (db/init.sh).
 --
--- Пользовательские триггеры задач, проектов и договоров на время загрузки отключены:
--- это начальное наполнение, а не изменения пользователей, — аудит не нужен, а историю
--- статусов генератор формирует сам с исторически достоверными моментами времени.
+-- Пользовательские триггеры задач, проектов, договоров и трудозатрат на время загрузки
+-- отключены: это начальное наполнение, а не изменения пользователей, — аудит не нужен,
+-- а историю статусов и трудозатраты генератор формирует сам с исторически достоверными
+-- датами (часы по уже завершённым задачам вносятся задним числом).
 -- Ограничения целостности (PK, FK, UNIQUE, CHECK, EXCLUDE) при этом проверяются.
 BEGIN;
 ALTER TABLE tasks DISABLE TRIGGER USER;
 ALTER TABLE projects DISABLE TRIGGER USER;
-ALTER TABLE contracts DISABLE TRIGGER USER;""")
+ALTER TABLE contracts DISABLE TRIGGER USER;
+ALTER TABLE worklogs DISABLE TRIGGER USER;""")
 
 insert("users", ["user_id", "full_name", "email", "created_at"], [u[:4] for u in users])
 insert("customers", ["customer_id", "name", "contact_name", "email"], customers)
@@ -463,11 +516,14 @@ insert("tasks", ["task_id", "project_id", "assignee_id", "title", "status", "pri
 insert("task_status_history", ["task_id", "old_status", "new_status", "changed_at", "changed_by"], history)
 insert("comments", ["comment_id", "task_id", "author_id", "body", "created_at"], comments)
 insert("marks_tasks", ["mark_id", "task_id", "date"], marks_tasks)
+insert("worklogs", ["task_id", "user_id", "work_date", "hours"],
+       [(k[0], k[1], k[2], float(v)) for k, v in sorted(worklogs.items())])
 
 out.append("""
 ALTER TABLE tasks ENABLE TRIGGER USER;
 ALTER TABLE projects ENABLE TRIGGER USER;
 ALTER TABLE contracts ENABLE TRIGGER USER;
+ALTER TABLE worklogs ENABLE TRIGGER USER;
 
 SELECT setval('users_user_id_seq', (SELECT max(user_id) FROM users));
 SELECT setval('customers_customer_id_seq', (SELECT max(customer_id) FROM customers));
@@ -484,4 +540,4 @@ path = Path(__file__).with_name("demo.sql")
 path.write_text("\n".join(out), encoding="utf-8")
 print(f"{path}: users {len(users)}, customers {len(customers)}, projects {len(PROJECTS)}, members {len(members)}, "
       f"contracts {len(contracts)}, sprints {len(sprints)}, tasks {len(tasks)}, history {len(history)}, "
-      f"comments {len(comments)}, marks_tasks {len(marks_tasks)}")
+      f"comments {len(comments)}, marks_tasks {len(marks_tasks)}, worklogs {len(worklogs)}")

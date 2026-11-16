@@ -127,104 +127,104 @@ ORDER BY CASE risk WHEN 'высокий' THEN 1 WHEN 'средний' THEN 2
                    WHEN 'низкий'  THEN 3 ELSE 4 END,
          days_left NULLS LAST
 
-Sort  (cost=10434.30..10436.06 rows=706 width=298) (actual time=80.720..80.746 rows=706 loops=1)
+Sort  (cost=10434.30..10436.06 rows=706 width=298) (actual time=78.476..78.502 rows=706 loops=1)
   Sort Key: (CASE CASE WHEN (s.tasks IS NULL) THEN 'нет задач'::text WHEN ((s.overdue >= 2) OR (((s.remaining_hours / (NULLIF((count(*)), 0))::numeric) / NULLIF((((p.end_date - pr.report_date))::numeric / 7.0), '0'::numeric)) > '20'::numeric)) THEN 'высокий'::text WHEN ((s.overdue = 1) OR (s.unassigned > 0) OR (s.not_estimated > 0)) THEN 'средний'::text ELSE 'низкий'::text END WHEN 'высокий'::text THEN 1 WHEN 'средний'::text THEN 2 WHEN 'низкий'::text THEN 3 ELSE 4 END), ((p.end_date - pr.report_date))
   Sort Method: quicksort  Memory: 188kB
   Buffers: shared hit=1784, temp read=238 written=238
   CTE params
-    ->  Result  (cost=0.00..0.01 rows=1 width=4) (actual time=0.001..0.001 rows=1 loops=1)
+    ->  Result  (cost=0.00..0.01 rows=1 width=4) (actual time=0.000..0.001 rows=1 loops=1)
   CTE task_facts
-    ->  Nested Loop  (cost=36.43..4892.57 rows=70071 width=45) (actual time=0.172..31.580 rows=70036 loops=1)
+    ->  Nested Loop  (cost=36.43..4892.57 rows=70071 width=45) (actual time=0.201..31.109 rows=70036 loops=1)
           Buffers: shared hit=1680
           ->  CTE Scan on params pr_1  (cost=0.00..0.02 rows=1 width=4) (actual time=0.000..0.001 rows=1 loops=1)
-          ->  Hash Join  (cost=36.43..2965.59 rows=70071 width=30) (actual time=0.170..20.956 rows=70036 loops=1)
+          ->  Hash Join  (cost=36.43..2965.59 rows=70071 width=30) (actual time=0.200..20.901 rows=70036 loops=1)
                 Hash Cond: (t.project_id = p_1.project_id)
                 Buffers: shared hit=1680
-                ->  Seq Scan on tasks t  (cost=0.00..2665.45 rows=100045 width=30) (actual time=0.004..6.410 rows=100045 loops=1)
+                ->  Seq Scan on tasks t  (cost=0.00..2665.45 rows=100045 width=30) (actual time=0.002..6.176 rows=100045 loops=1)
                       Buffers: shared hit=1665
-                ->  Hash  (cost=27.60..27.60 rows=706 width=4) (actual time=0.151..0.152 rows=706 loops=1)
+                ->  Hash  (cost=27.60..27.60 rows=706 width=4) (actual time=0.178..0.178 rows=706 loops=1)
                       Buckets: 1024  Batches: 1  Memory Usage: 33kB
                       Buffers: shared hit=15
-                      ->  Seq Scan on projects p_1  (cost=0.00..27.60 rows=706 width=4) (actual time=0.002..0.089 rows=706 loops=1)
+                      ->  Seq Scan on projects p_1  (cost=0.00..27.60 rows=706 width=4) (actual time=0.002..0.104 rows=706 loops=1)
                             Filter: ((status)::text = ANY ('{planned,active}'::text[]))
                             Rows Removed by Filter: 302
                             Buffers: shared hit=15
-  ->  Nested Loop  (cost=5386.26..5508.31 rows=706 width=298) (actual time=78.417..80.331 rows=706 loops=1)
+  ->  Nested Loop  (cost=5386.26..5508.31 rows=706 width=298) (actual time=76.192..78.078 rows=706 loops=1)
         Buffers: shared hit=1781, temp read=238 written=238
         ->  CTE Scan on params pr  (cost=0.00..0.02 rows=1 width=4) (actual time=0.002..0.002 rows=1 loops=1)
-        ->  Hash Left Join  (cost=5386.26..5416.51 rows=706 width=281) (actual time=78.399..79.249 rows=706 loops=1)
+        ->  Hash Left Join  (cost=5386.26..5416.51 rows=706 width=281) (actual time=76.178..77.007 rows=706 loops=1)
               Hash Cond: (b.assignee_id = bu.user_id)
               Buffers: shared hit=1781, temp read=238 written=238
-              ->  Hash Join  (cost=5318.95..5347.34 rows=706 width=262) (actual time=78.029..78.754 rows=706 loops=1)
+              ->  Hash Join  (cost=5318.95..5347.34 rows=706 width=262) (actual time=75.807..76.517 rows=706 loops=1)
                     Hash Cond: (p.owner_id = owner.user_id)
                     Buffers: shared hit=1759, temp read=238 written=238
-                    ->  Hash Left Join  (cost=5251.63..5278.18 rows=706 width=243) (actual time=77.652..78.206 rows=706 loops=1)
+                    ->  Hash Left Join  (cost=5251.63..5278.18 rows=706 width=243) (actual time=75.431..75.972 rows=706 loops=1)
                           Hash Cond: (p.project_id = b.project_id)
                           Buffers: shared hit=1737, temp read=238 written=238
-                          ->  Hash Left Join  (cost=3337.09..3361.77 rows=706 width=211) (actual time=67.441..67.881 rows=706 loops=1)
+                          ->  Hash Left Join  (cost=3337.09..3361.77 rows=706 width=211) (actual time=65.261..65.682 rows=706 loops=1)
                                 Hash Cond: (p.project_id = s.project_id)
                                 Buffers: shared hit=1734, temp written=237
-                                ->  Hash Right Join  (cost=175.89..198.71 rows=706 width=67) (actual time=1.114..1.415 rows=706 loops=1)
+                                ->  Hash Right Join  (cost=175.89..198.71 rows=706 width=67) (actual time=1.115..1.407 rows=706 loops=1)
                                       Hash Cond: (project_members.project_id = p.project_id)
                                       Buffers: shared hit=54
-                                      ->  HashAggregate  (cost=139.47..149.55 rows=1008 width=12) (actual time=0.853..0.988 rows=1007 loops=1)
+                                      ->  HashAggregate  (cost=139.47..149.55 rows=1008 width=12) (actual time=0.867..0.985 rows=1007 loops=1)
                                             Group Key: project_members.project_id
                                             Batches: 1  Memory Usage: 129kB
                                             Buffers: shared hit=39
-                                            ->  Seq Scan on project_members  (cost=0.00..114.36 rows=5021 width=4) (actual time=0.004..0.385 rows=5021 loops=1)
+                                            ->  Seq Scan on project_members  (cost=0.00..114.36 rows=5021 width=4) (actual time=0.003..0.382 rows=5021 loops=1)
                                                   Filter: ((role)::text <> 'manager'::text)
                                                   Rows Removed by Filter: 1008
                                                   Buffers: shared hit=39
-                                      ->  Hash  (cost=27.60..27.60 rows=706 width=59) (actual time=0.240..0.241 rows=706 loops=1)
+                                      ->  Hash  (cost=27.60..27.60 rows=706 width=59) (actual time=0.227..0.228 rows=706 loops=1)
                                             Buckets: 1024  Batches: 1  Memory Usage: 72kB
                                             Buffers: shared hit=15
-                                            ->  Seq Scan on projects p  (cost=0.00..27.60 rows=706 width=59) (actual time=0.003..0.135 rows=706 loops=1)
+                                            ->  Seq Scan on projects p  (cost=0.00..27.60 rows=706 width=59) (actual time=0.003..0.123 rows=706 loops=1)
                                                   Filter: ((status)::text = ANY ('{planned,active}'::text[]))
                                                   Rows Removed by Filter: 302
                                                   Buffers: shared hit=15
-                                ->  Hash  (cost=3158.69..3158.69 rows=200 width=148) (actual time=66.307..66.308 rows=705 loops=1)
+                                ->  Hash  (cost=3158.69..3158.69 rows=200 width=148) (actual time=64.127..64.128 rows=705 loops=1)
                                       Buckets: 1024  Batches: 1  Memory Usage: 77kB
                                       Buffers: shared hit=1680, temp written=237
-                                      ->  Subquery Scan on s  (cost=3153.19..3158.69 rows=200 width=148) (actual time=65.911..66.212 rows=705 loops=1)
+                                      ->  Subquery Scan on s  (cost=3153.19..3158.69 rows=200 width=148) (actual time=63.711..64.033 rows=705 loops=1)
                                             Buffers: shared hit=1680, temp written=237
-                                            ->  HashAggregate  (cost=3153.19..3156.69 rows=200 width=148) (actual time=65.911..66.161 rows=705 loops=1)
+                                            ->  HashAggregate  (cost=3153.19..3156.69 rows=200 width=148) (actual time=63.710..63.982 rows=705 loops=1)
                                                   Group Key: task_facts.project_id
                                                   Batches: 1  Memory Usage: 1081kB
                                                   Buffers: shared hit=1680, temp written=237
-                                                  ->  CTE Scan on task_facts  (cost=0.00..1401.42 rows=70071 width=41) (actual time=0.172..51.140 rows=70036 loops=1)
+                                                  ->  CTE Scan on task_facts  (cost=0.00..1401.42 rows=70071 width=41) (actual time=0.202..49.634 rows=70036 loops=1)
                                                         Buffers: shared hit=1680, temp written=237
-                          ->  Hash  (cost=1912.04..1912.04 rows=200 width=40) (actual time=10.202..10.203 rows=704 loops=1)
+                          ->  Hash  (cost=1912.04..1912.04 rows=200 width=40) (actual time=10.162..10.162 rows=704 loops=1)
                                 Buckets: 1024  Batches: 1  Memory Usage: 41kB
                                 Buffers: shared hit=3, temp read=238 written=1
-                                ->  Subquery Scan on b  (cost=1898.38..1912.04 rows=200 width=40) (actual time=9.813..10.138 rows=704 loops=1)
+                                ->  Subquery Scan on b  (cost=1898.38..1912.04 rows=200 width=40) (actual time=9.800..10.105 rows=704 loops=1)
                                       Buffers: shared hit=3, temp read=238 written=1
-                                      ->  Unique  (cost=1898.38..1910.04 rows=200 width=40) (actual time=9.812..10.080 rows=704 loops=1)
+                                      ->  Unique  (cost=1898.38..1910.04 rows=200 width=40) (actual time=9.799..10.058 rows=704 loops=1)
                                             Buffers: shared hit=3, temp read=238 written=1
-                                            ->  Sort  (cost=1898.38..1904.21 rows=2333 width=40) (actual time=9.812..9.919 rows=3511 loops=1)
+                                            ->  Sort  (cost=1898.38..1904.21 rows=2333 width=40) (actual time=9.799..9.902 rows=3511 loops=1)
                                                   Sort Key: task_facts_1.project_id, (sum(task_facts_1.hours)) DESC
                                                   Sort Method: quicksort  Memory: 234kB
                                                   Buffers: shared hit=3, temp read=238 written=1
-                                                  ->  HashAggregate  (cost=1662.87..1767.87 rows=2333 width=40) (actual time=8.445..9.028 rows=3511 loops=1)
+                                                  ->  HashAggregate  (cost=1662.87..1767.87 rows=2333 width=40) (actual time=8.439..9.003 rows=3511 loops=1)
                                                         Group Key: task_facts_1.project_id, task_facts_1.assignee_id
                                                         Filter: (sum(task_facts_1.hours) > '0'::numeric)
                                                         Batches: 1  Memory Usage: 1489kB
                                                         Rows Removed by Filter: 1
                                                         Buffers: temp read=238 written=1
-                                                        ->  CTE Scan on task_facts task_facts_1  (cost=0.00..1401.42 rows=34860 width=40) (actual time=0.016..4.162 rows=25017 loops=1)
+                                                        ->  CTE Scan on task_facts task_facts_1  (cost=0.00..1401.42 rows=34860 width=40) (actual time=0.018..4.100 rows=25017 loops=1)
                                                               Filter: ((NOT is_done) AND (assignee_id IS NOT NULL))
                                                               Rows Removed by Filter: 45019
                                                               Buffers: temp read=238 written=1
-                    ->  Hash  (cost=42.14..42.14 rows=2014 width=27) (actual time=0.354..0.354 rows=2014 loops=1)
+                    ->  Hash  (cost=42.14..42.14 rows=2014 width=27) (actual time=0.361..0.361 rows=2014 loops=1)
                           Buckets: 2048  Batches: 1  Memory Usage: 135kB
                           Buffers: shared hit=22
-                          ->  Seq Scan on users owner  (cost=0.00..42.14 rows=2014 width=27) (actual time=0.003..0.134 rows=2014 loops=1)
+                          ->  Seq Scan on users owner  (cost=0.00..42.14 rows=2014 width=27) (actual time=0.003..0.133 rows=2014 loops=1)
                                 Buffers: shared hit=22
-              ->  Hash  (cost=42.14..42.14 rows=2014 width=27) (actual time=0.350..0.350 rows=2014 loops=1)
+              ->  Hash  (cost=42.14..42.14 rows=2014 width=27) (actual time=0.355..0.355 rows=2014 loops=1)
                     Buckets: 2048  Batches: 1  Memory Usage: 135kB
                     Buffers: shared hit=22
-                    ->  Seq Scan on users bu  (cost=0.00..42.14 rows=2014 width=27) (actual time=0.009..0.130 rows=2014 loops=1)
+                    ->  Seq Scan on users bu  (cost=0.00..42.14 rows=2014 width=27) (actual time=0.008..0.126 rows=2014 loops=1)
                           Buffers: shared hit=22
 Planning:
-  Buffers: shared hit=396
-Planning Time: 2.850 ms
-Execution Time: 82.888 ms
+  Buffers: shared hit=397
+Planning Time: 2.234 ms
+Execution Time: 80.708 ms

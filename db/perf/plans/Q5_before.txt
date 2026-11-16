@@ -12,63 +12,63 @@ SELECT p.code, u.full_name, pm.role,
         JOIN users u ON u.user_id = pm.user_id
         WHERE p.status = 'active'
 
-Hash Join  (cost=102.45..17422286.03 rows=3607 width=84) (actual time=299.442..30218.334 rows=3617 loops=1)
+Hash Join  (cost=102.45..17434421.10 rows=3607 width=84) (actual time=240.367..18416.219 rows=3617 loops=1)
   Hash Cond: (pm.user_id = u.user_id)
   Buffers: shared hit=7289087
-  ->  Hash Join  (cost=35.14..150.32 rows=3607 width=21) (actual time=289.582..302.695 rows=3617 loops=1)
+  ->  Hash Join  (cost=35.14..150.32 rows=3607 width=21) (actual time=231.931..237.834 rows=3617 loops=1)
         Hash Cond: (pm.project_id = p.project_id)
         Buffers: shared hit=54
-        ->  Seq Scan on project_members pm  (cost=0.00..99.29 rows=6029 width=16) (actual time=0.008..3.432 rows=6029 loops=1)
+        ->  Seq Scan on project_members pm  (cost=0.00..99.29 rows=6029 width=16) (actual time=0.005..1.456 rows=6029 loops=1)
               Buffers: shared hit=39
-        ->  Hash  (cost=27.60..27.60 rows=603 width=9) (actual time=289.545..289.546 rows=603 loops=1)
+        ->  Hash  (cost=27.60..27.60 rows=603 width=9) (actual time=231.897..231.897 rows=603 loops=1)
               Buckets: 1024  Batches: 1  Memory Usage: 34kB
               Buffers: shared hit=15
-              ->  Seq Scan on projects p  (cost=0.00..27.60 rows=603 width=9) (actual time=289.380..289.474 rows=603 loops=1)
+              ->  Seq Scan on projects p  (cost=0.00..27.60 rows=603 width=9) (actual time=231.759..231.837 rows=603 loops=1)
                     Filter: ((status)::text = 'active'::text)
                     Rows Removed by Filter: 405
                     Buffers: shared hit=15
-  ->  Hash  (cost=42.14..42.14 rows=2014 width=27) (actual time=0.334..0.335 rows=2014 loops=1)
+  ->  Hash  (cost=42.14..42.14 rows=2014 width=27) (actual time=0.277..0.278 rows=2014 loops=1)
         Buckets: 2048  Batches: 1  Memory Usage: 135kB
         Buffers: shared hit=22
-        ->  Seq Scan on users u  (cost=0.00..42.14 rows=2014 width=27) (actual time=0.007..0.151 rows=2014 loops=1)
+        ->  Seq Scan on users u  (cost=0.00..42.14 rows=2014 width=27) (actual time=0.021..0.138 rows=2014 loops=1)
               Buffers: shared hit=22
   SubPlan 1
-    ->  Aggregate  (cost=186.55..186.56 rows=1 width=8) (actual time=0.043..0.043 rows=1 loops=3617)
+    ->  Aggregate  (cost=187.67..187.68 rows=1 width=8) (actual time=0.025..0.025 rows=1 loops=3617)
           Buffers: shared hit=296846
-          ->  Index Scan using uq_tasks_project_title on tasks t  (cost=0.42..186.55 rows=1 width=0) (actual time=0.034..0.039 rows=4 loops=3617)
+          ->  Index Scan using uq_tasks_project_title on tasks t  (cost=0.42..187.66 rows=1 width=0) (actual time=0.020..0.024 rows=4 loops=3617)
                 Index Cond: (project_id = pm.project_id)
                 Filter: (((status)::text <> 'done'::text) AND (assignee_id = pm.user_id))
                 Rows Removed by Filter: 95
                 Buffers: shared hit=296846
   SubPlan 2
-    ->  Aggregate  (cost=186.55..186.56 rows=1 width=32) (actual time=0.023..0.023 rows=1 loops=3617)
+    ->  Aggregate  (cost=187.67..187.68 rows=1 width=32) (actual time=0.016..0.016 rows=1 loops=3617)
           Buffers: shared hit=296846
-          ->  Index Scan using uq_tasks_project_title on tasks t_1  (cost=0.42..186.55 rows=1 width=5) (actual time=0.015..0.020 rows=4 loops=3617)
+          ->  Index Scan using uq_tasks_project_title on tasks t_1  (cost=0.42..187.66 rows=1 width=5) (actual time=0.011..0.014 rows=4 loops=3617)
                 Index Cond: (project_id = pm.project_id)
                 Filter: (((status)::text <> 'done'::text) AND (assignee_id = pm.user_id))
                 Rows Removed by Filter: 95
                 Buffers: shared hit=296846
   SubPlan 3
-    ->  Aggregate  (cost=4456.94..4456.95 rows=1 width=8) (actual time=8.194..8.194 rows=1 loops=3617)
+    ->  Aggregate  (cost=4458.07..4458.08 rows=1 width=8) (actual time=4.980..4.980 rows=1 loops=3617)
           Buffers: shared hit=6695319
-          ->  Hash Join  (cost=187.29..4456.94 rows=1 width=8) (actual time=3.069..8.186 rows=33 loops=3617)
+          ->  Hash Join  (cost=188.41..4458.06 rows=1 width=8) (actual time=1.886..4.977 rows=33 loops=3617)
                 Hash Cond: (c.task_id = t_2.task_id)
                 Buffers: shared hit=6695319
-                ->  Seq Scan on comments c  (cost=0.00..4269.39 rows=100 width=12) (actual time=1.985..8.126 rows=100 loops=3617)
+                ->  Seq Scan on comments c  (cost=0.00..4269.39 rows=100 width=12) (actual time=1.233..4.940 rows=100 loops=3617)
                       Filter: (author_id = pm.user_id)
                       Rows Removed by Filter: 199931
                       Buffers: shared hit=6398473
-                ->  Hash  (cost=186.05..186.05 rows=99 width=4) (actual time=0.031..0.031 rows=100 loops=3617)
+                ->  Hash  (cost=187.16..187.16 rows=100 width=4) (actual time=0.023..0.023 rows=100 loops=3617)
                       Buckets: 1024  Batches: 1  Memory Usage: 12kB
                       Buffers: shared hit=296846
-                      ->  Index Scan using uq_tasks_project_title on tasks t_2  (cost=0.42..186.05 rows=99 width=4) (actual time=0.002..0.021 rows=100 loops=3617)
+                      ->  Index Scan using uq_tasks_project_title on tasks t_2  (cost=0.42..187.16 rows=100 width=4) (actual time=0.001..0.015 rows=100 loops=3617)
                             Index Cond: (project_id = pm.project_id)
                             Buffers: shared hit=296846
 Planning:
-  Buffers: shared hit=406
-Planning Time: 1.280 ms
+  Buffers: shared hit=408
+Planning Time: 1.184 ms
 JIT:
   Functions: 59
   Options: Inlining true, Optimization true, Expressions true, Deforming true
-  Timing: Generation 1.904 ms, Inlining 54.728 ms, Optimization 126.619 ms, Emission 108.054 ms, Total 291.305 ms
-Execution Time: 30237.407 ms
+  Timing: Generation 1.617 ms, Inlining 50.426 ms, Optimization 110.463 ms, Emission 70.899 ms, Total 233.405 ms
+Execution Time: 18431.359 ms

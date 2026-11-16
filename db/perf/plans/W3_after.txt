@@ -1,27 +1,27 @@
 UPDATE tasks SET sprint_id = NULL
         WHERE task_id IN (SELECT task_id FROM tasks WHERE sprint_id IS NOT NULL ORDER BY task_id LIMIT 10000)
 
-Update on tasks  (cost=977.10..8142.64 rows=0 width=0) (actual time=153.531..153.535 rows=0 loops=1)
-  Buffers: shared hit=279395 dirtied=180 written=180
-  ->  Hash Semi Join  (cost=977.10..8142.64 rows=10000 width=38) (actual time=11.901..34.200 rows=10000 loops=1)
+Update on tasks  (cost=976.02..8139.39 rows=0 width=0) (actual time=144.449..144.454 rows=0 loops=1)
+  Buffers: shared hit=277226 dirtied=178 written=256
+  ->  Hash Semi Join  (cost=976.02..8139.39 rows=10000 width=38) (actual time=10.169..34.032 rows=10000 loops=1)
         Hash Cond: (tasks.task_id = "ANY_subquery".task_id)
-        Buffers: shared hit=35686
-        ->  Seq Scan on tasks  (cost=0.00..6665.84 rows=147984 width=10) (actual time=0.006..12.316 rows=100045 loops=1)
-              Buffers: shared hit=5186
-        ->  Hash  (cost=852.10..852.10 rows=10000 width=32) (actual time=11.799..11.801 rows=10000 loops=1)
+        Buffers: shared hit=34702
+        ->  Seq Scan on tasks  (cost=0.00..6663.70 rows=147970 width=10) (actual time=0.006..15.784 rows=100045 loops=1)
+              Buffers: shared hit=5184
+        ->  Hash  (cost=851.02..851.02 rows=10000 width=32) (actual time=10.069..10.072 rows=10000 loops=1)
               Buckets: 16384  Batches: 1  Memory Usage: 753kB
-              Buffers: shared hit=30500
-              ->  Subquery Scan on "ANY_subquery"  (cost=0.42..852.10 rows=10000 width=32) (actual time=0.032..10.256 rows=10000 loops=1)
-                    Buffers: shared hit=30500
-                    ->  Limit  (cost=0.42..752.10 rows=10000 width=4) (actual time=0.015..9.103 rows=10000 loops=1)
-                          Buffers: shared hit=30500
-                          ->  Index Scan using tasks_pkey on tasks tasks_1  (cost=0.42..9621.18 rows=127991 width=4) (actual time=0.014..8.605 rows=10000 loops=1)
+              Buffers: shared hit=29518
+              ->  Subquery Scan on "ANY_subquery"  (cost=0.42..851.02 rows=10000 width=32) (actual time=0.033..8.724 rows=10000 loops=1)
+                    Buffers: shared hit=29518
+                    ->  Limit  (cost=0.42..751.02 rows=10000 width=4) (actual time=0.016..7.737 rows=10000 loops=1)
+                          Buffers: shared hit=29518
+                          ->  Index Scan using tasks_pkey on tasks tasks_1  (cost=0.42..9610.97 rows=128038 width=4) (actual time=0.015..7.266 rows=10000 loops=1)
                                 Filter: (sprint_id IS NOT NULL)
                                 Rows Removed by Filter: 1654
-                                Buffers: shared hit=30500
+                                Buffers: shared hit=29518
 Planning:
   Buffers: shared hit=365
-Planning Time: 1.685 ms
-Trigger trg_tasks_audit: time=528.658 calls=10000
-Trigger trg_tasks_sprint_capacity: time=7.400 calls=10000
-Execution Time: 683.350 ms
+Planning Time: 1.442 ms
+Trigger trg_tasks_audit: time=624.443 calls=10000
+Trigger trg_tasks_sprint_capacity: time=6.482 calls=10000
+Execution Time: 769.827 ms
